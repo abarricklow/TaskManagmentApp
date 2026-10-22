@@ -7,8 +7,8 @@ export const Colors = {
   primary: '#4A7C59',
   secondary: '#A5B4FC',
   accent: '68B0AB',
-  text: '#1F2937',
-  textSecondary: '#6B7280',
+  text: '#27292a',
+  textSecondary: '#2f4f7f',
   border: '#8FC0A9',
   error: '#DC2626',
 };
@@ -22,6 +22,12 @@ export const FontSizes = {
   title: 32,
 };
 
+export const IconSizes = {
+  small: 12,
+  medium: 24,
+  large: 36,
+};
+
 export const Spacing = {
   xs: 4,
   sm: 8,
@@ -32,33 +38,33 @@ export const Spacing = {
 
 // Also can change as we go
 export const GlobalStyles = StyleSheet.create({
-  screen: {
-    flex: 1,
-    backgroundColor: Colors.background,
-    padding: Spacing.md,
-  },
+    screen: {
+        flex: 1,
+        backgroundColor: Colors.background,
+        padding: Spacing.md,
+    },
 
-  heading: {
-    fontSize: FontSizes.heading,
-    fontWeight: 'bold',
-    color: Colors.text,
-  },
+    heading: {
+        fontSize: FontSizes.heading,
+        fontWeight: 'bold',
+        color: Colors.text,
+    },
 
-  bodyText: {
-    fontSize: FontSizes.body,
-    color: Colors.text,
-  },
+    bodyText: {
+        fontSize: FontSizes.body,
+        color: Colors.text,
+    },
 
-  container: {
-    flex: 1,
-    backgroundColor: '#25292e',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
+    container: {
+        flex: 1,
+        backgroundColor: Colors.background,
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
 
-  button: {
-    fontSize: 20,
-    textDecorationLine: 'underline',
-    color: '#fff',
-  },
+    button: {
+        fontSize: 20,
+        textDecorationLine: 'underline',
+        color: '#fff',
+    },
 });

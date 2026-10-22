@@ -1,4 +1,5 @@
 import { Tabs } from 'expo-router';
+import { Colors, IconSizes, GlobalStyles } from '../styles/theme';
 import AntDesign from '@expo/vector-icons/AntDesign';
 import Feather from '@expo/vector-icons/Feather';
 import Entypo from '@expo/vector-icons/Entypo';
@@ -8,14 +9,13 @@ export default function TabLayout() {
     <Tabs
       screenOptions={{
       tabBarShowLabel: false,
-      tabBarActiveTintColor: '#ffd33d',
+      tabBarActiveTintColor: Colors.accent,
       headerStyle: {
-        backgroundColor: '#25292e',
+        backgroundColor: Colors.background,
       },
-      headerShadowVisible: false,
-      headerTintColor: '#fff',
+      headerShadowVisible: true,
       tabBarStyle: {
-        backgroundColor: '#25292e',
+        backgroundColor: Colors.background,
       },
     }}
     >
@@ -24,7 +24,7 @@ export default function TabLayout() {
         options={{
           title: 'Home',
           tabBarIcon: ({ color, focused }) => (
-            <Entypo name="home" size={24} color="black" />
+            <Entypo name="home" size={IconSizes.medium} color={color}/>
           ),
         }}
       />
@@ -33,7 +33,7 @@ export default function TabLayout() {
         options={{
           title: 'Category',
           tabBarIcon: ({ color, focused }) => (
-            <AntDesign name="appstore" size={24} color="black" />
+            <AntDesign name="appstore" size={IconSizes.medium} color={color}/>
           ),
         }}
       />
@@ -42,7 +42,7 @@ export default function TabLayout() {
         options={{
           title: 'Add',
           tabBarIcon: ({ color, focused }) => (
-            <AntDesign name="plus-circle" size={24} color="black" />
+            <AntDesign name="plus-circle" size={IconSizes.medium} color={color} />
           ),
         }}
       />
@@ -51,7 +51,7 @@ export default function TabLayout() {
         options={{
           title: 'Plants',
           tabBarIcon: ({ color, focused }) => (
-            <Entypo name="leaf" size={24} color="black" />
+            <Entypo name="leaf" size={IconSizes.medium} color={color}/>
           ),
         }}
       />
@@ -60,7 +60,7 @@ export default function TabLayout() {
         options={{
           title: 'Wellness',
           tabBarIcon: ({ color, focused }) => (
-            <Feather name="heart" size={24} color="black" />
+            <Feather name="heart" size={IconSizes.medium} color={color}/>
           ),
         }}
       />

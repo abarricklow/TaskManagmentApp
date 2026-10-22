@@ -1040,3 +1040,302 @@
 {"_e":"metro:client_log","_t":1792628940884,"level":"log","data":["Running application \"main\" with appParams:\n","{\"hydrate\": undefined, \"rootTag\": \"#root\"}","\nDevelopment-level warnings: ON.\nPerformance optimizations: OFF."]}
 {"_e":"metro:client_log","_t":1792628940899,"level":"warn","data":["[Layout children]: No route named \"Plants\" exists in nested children:","[\"add\", \"category\", \"index\", \"plants\", \"wellness\"]"]}
 {"_e":"metro:client_log","_t":1792629635538,"level":"warn","data":["Route \"./styles/theme.ts\" is missing the required default export. Ensure a React component is exported as default."]}
+{"_e":"root:init","_t":1792630451077,"format":"v0-jsonl","version":"57.0.27"}
+{"_e":"env:mode","_t":1792630451078,"nodeEnv":"development","babelEnv":"development","mode":"development"}
+{"_e":"env:load","_t":1792630451082,"mode":"development","files":[],"env":{}}
+{"_e":"devserver:start","_t":1792630451762,"mode":"development","web":true,"baseUrl":"","asyncRoutes":false,"routerRoot":"../..\\..\\src\\app","serverComponents":false,"serverActions":false,"serverRendering":true,"apiRoutes":false,"exporting":false}
+{"_e":"metro:config","_t":1792630452335,"serverRoot":"../..\\..","projectRoot":"../..\\..","exporting":false,"flags":{"autolinkingModuleResolution":false,"serverActions":false,"serverComponents":false,"reactCompiler":true,"optimizeGraph":false,"treeshaking":false,"logbox":false}}
+{"_e":"expo:dev-tools-plugin:load","_t":1792630452828,"plugins":[]}
+{"_e":"metro:instantiate","_t":1792630465741,"atlas":false,"workers":8,"host":"::","port":8081}
+{"_e":"metro:bundling:started","_t":1792630470072,"id":"2","platform":"web","environment":null,"entry":"node_modules\\expo-router\\entry.js"}
+{"_e":"metro:bundling:progress","_t":1792630470074,"id":"2","progress":0,"total":1,"current":0}
+{"_e":"metro:bundling:started","_t":1792630470077,"id":"3","platform":"web","environment":"node","entry":"node_modules\\expo\\node_modules\\@expo\\cli\\node_modules\\@expo\\router-server\\node\\render.js"}
+{"_e":"metro:bundling:progress","_t":1792630470077,"id":"2","progress":0,"total":1,"current":0}
+{"_e":"metro:bundling:progress","_t":1792630470077,"id":"3","progress":0,"total":1,"current":0}
+{"_e":"metro:bundling:progress","_t":1792630470086,"id":"2","progress":0,"total":1,"current":0}
+{"_e":"metro:bundling:progress","_t":1792630470087,"id":"3","progress":0,"total":1,"current":0}
+{"_e":"metro:bundling:progress","_t":1792630470186,"id":"2","progress":0.08650519031141869,"total":17,"current":5}
+{"_e":"metro:bundling:progress","_t":1792630470187,"id":"3","progress":0,"total":1,"current":0}
+{"_e":"metro:bundling:progress","_t":1792630470291,"id":"2","progress":0.32653061224489793,"total":28,"current":16}
+{"_e":"metro:bundling:progress","_t":1792630470291,"id":"3","progress":0,"total":1,"current":0}
+{"_e":"metro:bundling:progress","_t":1792630470451,"id":"2","progress":0.32653061224489793,"total":52,"current":18}
+{"_e":"metro:bundling:progress","_t":1792630470452,"id":"3","progress":0,"total":1,"current":0}
+{"_e":"metro:bundling:progress","_t":1792630470551,"id":"2","progress":0.32653061224489793,"total":52,"current":18}
+{"_e":"metro:bundling:progress","_t":1792630470551,"id":"3","progress":0.07006920415224914,"total":34,"current":9}
+{"_e":"metro:bundling:progress","_t":1792630470656,"id":"2","progress":0.32653061224489793,"total":134,"current":32}
+{"_e":"metro:bundling:progress","_t":1792630470656,"id":"3","progress":0.07006920415224914,"total":34,"current":9}
+{"_e":"metro:bundling:progress","_t":1792630470760,"id":"2","progress":0.32653061224489793,"total":170,"current":50}
+{"_e":"metro:bundling:progress","_t":1792630470760,"id":"3","progress":0.07006920415224914,"total":34,"current":9}
+{"_e":"metro:bundling:progress","_t":1792630470860,"id":"2","progress":0.32653061224489793,"total":217,"current":69}
+{"_e":"metro:bundling:progress","_t":1792630470860,"id":"3","progress":0.07006920415224914,"total":34,"current":9}
+{"_e":"metro:bundling:progress","_t":1792630470964,"id":"2","progress":0.32653061224489793,"total":230,"current":84}
+{"_e":"metro:bundling:progress","_t":1792630470965,"id":"3","progress":0.07006920415224914,"total":34,"current":9}
+{"_e":"metro:bundling:progress","_t":1792630471064,"id":"2","progress":0.32653061224489793,"total":245,"current":92}
+{"_e":"metro:bundling:progress","_t":1792630471065,"id":"3","progress":0.07006920415224914,"total":34,"current":9}
+{"_e":"metro:bundling:progress","_t":1792630471166,"id":"2","progress":0.32653061224489793,"total":250,"current":95}
+{"_e":"metro:bundling:progress","_t":1792630471166,"id":"3","progress":0.07006920415224914,"total":34,"current":9}
+{"_e":"metro:bundling:progress","_t":1792630471268,"id":"2","progress":0.32653061224489793,"total":259,"current":112}
+{"_e":"metro:bundling:progress","_t":1792630471268,"id":"3","progress":0.07006920415224914,"total":34,"current":9}
+{"_e":"metro:bundling:progress","_t":1792630471373,"id":"2","progress":0.32653061224489793,"total":259,"current":112}
+{"_e":"metro:bundling:progress","_t":1792630471373,"id":"3","progress":0.08681441326530613,"total":112,"current":33}
+{"_e":"metro:bundling:progress","_t":1792630471474,"id":"2","progress":0.32653061224489793,"total":278,"current":135}
+{"_e":"metro:bundling:progress","_t":1792630471474,"id":"3","progress":0.08681441326530613,"total":112,"current":33}
+{"_e":"metro:bundling:progress","_t":1792630471578,"id":"2","progress":0.32653061224489793,"total":330,"current":158}
+{"_e":"metro:bundling:progress","_t":1792630471578,"id":"3","progress":0.08681441326530613,"total":112,"current":33}
+{"_e":"metro:bundling:progress","_t":1792630471678,"id":"2","progress":0.32653061224489793,"total":364,"current":183}
+{"_e":"metro:bundling:progress","_t":1792630471678,"id":"3","progress":0.08681441326530613,"total":112,"current":33}
+{"_e":"metro:bundling:progress","_t":1792630471779,"id":"2","progress":0.32653061224489793,"total":382,"current":203}
+{"_e":"metro:bundling:progress","_t":1792630471779,"id":"3","progress":0.08681441326530613,"total":112,"current":33}
+{"_e":"metro:bundling:progress","_t":1792630471879,"id":"2","progress":0.3465323109029581,"total":406,"current":239}
+{"_e":"metro:bundling:progress","_t":1792630471879,"id":"3","progress":0.08681441326530613,"total":112,"current":33}
+{"_e":"metro:bundling:progress","_t":1792630472006,"id":"2","progress":0.3860872843811857,"total":412,"current":256}
+{"_e":"metro:bundling:progress","_t":1792630472006,"id":"3","progress":0.08681441326530613,"total":112,"current":33}
+{"_e":"metro:bundling:progress","_t":1792630472109,"id":"2","progress":0.3860872843811857,"total":412,"current":256}
+{"_e":"metro:bundling:progress","_t":1792630472109,"id":"3","progress":0.24053714146618524,"total":157,"current":77}
+{"_e":"metro:bundling:progress","_t":1792630472218,"id":"2","progress":0.3860872843811857,"total":412,"current":256}
+{"_e":"metro:bundling:progress","_t":1792630472218,"id":"3","progress":0.24053714146618524,"total":216,"current":98}
+{"_e":"metro:bundling:progress","_t":1792630472333,"id":"2","progress":0.3860872843811857,"total":412,"current":256}
+{"_e":"metro:bundling:progress","_t":1792630472333,"id":"3","progress":0.24053714146618524,"total":240,"current":114}
+{"_e":"metro:bundling:progress","_t":1792630472434,"id":"2","progress":0.3860872843811857,"total":434,"current":266}
+{"_e":"metro:bundling:progress","_t":1792630472435,"id":"3","progress":0.24053714146618524,"total":240,"current":114}
+{"_e":"metro:bundling:progress","_t":1792630472535,"id":"2","progress":0.4176884498770046,"total":458,"current":296}
+{"_e":"metro:bundling:progress","_t":1792630472535,"id":"3","progress":0.24053714146618524,"total":240,"current":114}
+{"_e":"metro:bundling:progress","_t":1792630472639,"id":"2","progress":0.4408529889032766,"total":494,"current":328}
+{"_e":"metro:bundling:progress","_t":1792630472639,"id":"3","progress":0.24053714146618524,"total":240,"current":114}
+{"_e":"metro:bundling:progress","_t":1792630472740,"id":"2","progress":0.4923668287050889,"total":533,"current":374}
+{"_e":"metro:bundling:progress","_t":1792630472740,"id":"3","progress":0.24053714146618524,"total":240,"current":114}
+{"_e":"metro:bundling:progress","_t":1792630472842,"id":"2","progress":0.4923668287050889,"total":567,"current":396}
+{"_e":"metro:bundling:progress","_t":1792630472842,"id":"3","progress":0.24053714146618524,"total":240,"current":114}
+{"_e":"metro:bundling:progress","_t":1792630472943,"id":"2","progress":0.5387914962668647,"total":579,"current":425}
+{"_e":"metro:bundling:progress","_t":1792630472943,"id":"3","progress":0.24053714146618524,"total":240,"current":114}
+{"_e":"metro:bundling:progress","_t":1792630473044,"id":"2","progress":0.5387914962668647,"total":579,"current":425}
+{"_e":"metro:bundling:progress","_t":1792630473045,"id":"3","progress":0.24053714146618524,"total":356,"current":172}
+{"_e":"metro:bundling:progress","_t":1792630473144,"id":"2","progress":0.5387914962668647,"total":579,"current":425}
+{"_e":"metro:bundling:progress","_t":1792630473144,"id":"3","progress":0.2629848783694937,"total":390,"current":200}
+{"_e":"metro:bundling:progress","_t":1792630473246,"id":"2","progress":0.5387914962668647,"total":579,"current":425}
+{"_e":"metro:bundling:progress","_t":1792630473246,"id":"3","progress":0.2849251278305332,"total":444,"current":237}
+{"_e":"metro:bundling:progress","_t":1792630473351,"id":"2","progress":0.5387914962668647,"total":579,"current":425}
+{"_e":"metro:bundling:progress","_t":1792630473351,"id":"3","progress":0.3258406375570445,"total":473,"current":270}
+{"_e":"metro:bundling:progress","_t":1792630473450,"id":"2","progress":0.5387914962668647,"total":579,"current":425}
+{"_e":"metro:bundling:progress","_t":1792630473451,"id":"3","progress":0.32686052443628205,"total":495,"current":283}
+{"_e":"metro:bundling:progress","_t":1792630473552,"id":"2","progress":0.5387914962668647,"total":579,"current":425}
+{"_e":"metro:bundling:progress","_t":1792630473553,"id":"3","progress":0.355216,"total":500,"current":298}
+{"_e":"metro:bundling:progress","_t":1792630473655,"id":"2","progress":0.5802553939011755,"total":596,"current":454}
+{"_e":"metro:bundling:progress","_t":1792630473655,"id":"3","progress":0.355216,"total":500,"current":298}
+{"_e":"metro:bundling:progress","_t":1792630473755,"id":"2","progress":0.7533457282809659,"total":621,"current":539}
+{"_e":"metro:bundling:progress","_t":1792630473755,"id":"3","progress":0.355216,"total":500,"current":298}
+{"_e":"metro:bundling:progress","_t":1792630473931,"id":"2","progress":0.8052480475221853,"total":643,"current":577}
+{"_e":"metro:bundling:progress","_t":1792630473931,"id":"3","progress":0.355216,"total":500,"current":298}
+{"_e":"metro:bundling:progress","_t":1792630474031,"id":"2","progress":0.8052480475221853,"total":643,"current":577}
+{"_e":"metro:bundling:progress","_t":1792630474031,"id":"3","progress":0.41412726293520696,"total":533,"current":343}
+{"_e":"metro:bundling:progress","_t":1792630474137,"id":"2","progress":0.8052480475221853,"total":643,"current":577}
+{"_e":"metro:bundling:progress","_t":1792630474137,"id":"3","progress":0.4792899408284023,"total":572,"current":396}
+{"_e":"metro:bundling:progress","_t":1792630474238,"id":"2","progress":0.8052480475221853,"total":643,"current":577}
+{"_e":"metro:bundling:progress","_t":1792630474238,"id":"3","progress":0.5055764041153651,"total":616,"current":438}
+{"_e":"metro:bundling:progress","_t":1792630474343,"id":"2","progress":0.8052480475221853,"total":643,"current":577}
+{"_e":"metro:bundling:progress","_t":1792630474344,"id":"3","progress":0.521235202370924,"total":651,"current":470}
+{"_e":"metro:bundling:progress","_t":1792630474444,"id":"2","progress":0.8239053254437869,"total":650,"current":590}
+{"_e":"metro:bundling:progress","_t":1792630474444,"id":"3","progress":0.521235202370924,"total":651,"current":470}
+{"_e":"metro:bundling:progress","_t":1792630474548,"id":"2","progress":0.8368557582094954,"total":669,"current":612}
+{"_e":"metro:bundling:progress","_t":1792630474548,"id":"3","progress":0.521235202370924,"total":651,"current":470}
+{"_e":"metro:bundling:progress","_t":1792630474650,"id":"2","progress":0.8368557582094954,"total":669,"current":612}
+{"_e":"metro:bundling:progress","_t":1792630474650,"id":"3","progress":0.5482946483088381,"total":682,"current":505}
+{"_e":"metro:bundling:progress","_t":1792630474751,"id":"2","progress":0.8368557582094954,"total":669,"current":612}
+{"_e":"metro:bundling:progress","_t":1792630474751,"id":"3","progress":0.565765595463138,"total":690,"current":519}
+{"_e":"metro:bundling:progress","_t":1792630474850,"id":"2","progress":0.8368557582094954,"total":669,"current":612}
+{"_e":"metro:bundling:progress","_t":1792630474851,"id":"3","progress":0.6173469387755102,"total":714,"current":561}
+{"_e":"metro:bundling:progress","_t":1792630474950,"id":"2","progress":0.8368557582094954,"total":669,"current":612}
+{"_e":"metro:bundling:progress","_t":1792630474950,"id":"3","progress":0.632890105794022,"total":763,"current":607}
+{"_e":"metro:bundling:progress","_t":1792630475053,"id":"2","progress":0.8368557582094954,"total":669,"current":612}
+{"_e":"metro:bundling:progress","_t":1792630475053,"id":"3","progress":0.6854009368450291,"total":796,"current":659}
+{"_e":"metro:bundling:progress","_t":1792630475153,"id":"2","progress":0.8598347107438016,"total":715,"current":663}
+{"_e":"metro:bundling:progress","_t":1792630475153,"id":"3","progress":0.6854009368450291,"total":796,"current":659}
+{"_e":"metro:bundling:progress","_t":1792630475258,"id":"2","progress":0.8598347107438016,"total":715,"current":663}
+{"_e":"metro:bundling:progress","_t":1792630475258,"id":"3","progress":0.7164639705985495,"total":801,"current":678}
+{"_e":"metro:bundling:progress","_t":1792630475365,"id":"2","progress":0.8598347107438016,"total":715,"current":663}
+{"_e":"metro:bundling:progress","_t":1792630475365,"id":"3","progress":0.8042608165458289,"total":814,"current":730}
+{"_e":"metro:bundling:progress","_t":1792630475467,"id":"2","progress":0.8598347107438016,"total":715,"current":663}
+{"_e":"metro:bundling:progress","_t":1792630475467,"id":"3","progress":0.8842282739332767,"total":838,"current":788}
+{"_e":"metro:bundling:progress","_t":1792630475571,"id":"2","progress":0.8598347107438016,"total":715,"current":663}
+{"_e":"metro:bundling:progress","_t":1792630475572,"id":"3","progress":0.9025,"total":840,"current":798}
+{"_e":"metro:bundling:progress","_t":1792630475671,"id":"2","progress":0.8687195923734385,"total":780,"current":727}
+{"_e":"metro:bundling:progress","_t":1792630475671,"id":"3","progress":0.9025,"total":840,"current":798}
+{"_e":"metro:bundling:progress","_t":1792630475787,"id":"2","progress":0.9033451787222158,"total":787,"current":748}
+{"_e":"metro:bundling:progress","_t":1792630475787,"id":"3","progress":0.9025,"total":840,"current":798}
+{"_e":"metro:bundling:progress","_t":1792630475887,"id":"2","progress":0.9033451787222158,"total":835,"current":776}
+{"_e":"metro:bundling:progress","_t":1792630475887,"id":"3","progress":0.9025,"total":840,"current":798}
+{"_e":"metro:bundling:progress","_t":1792630475987,"id":"2","progress":0.9033451787222158,"total":854,"current":795}
+{"_e":"metro:bundling:progress","_t":1792630475987,"id":"3","progress":0.9025,"total":840,"current":798}
+{"_e":"metro:bundling:progress","_t":1792630476087,"id":"2","progress":0.9033451787222158,"total":854,"current":795}
+{"_e":"metro:bundling:progress","_t":1792630476088,"id":"3","progress":0.932665059064131,"total":905,"current":874}
+{"_e":"metro:bundling:progress","_t":1792630476189,"id":"2","progress":0.9033451787222158,"total":854,"current":795}
+{"_e":"metro:bundling:progress","_t":1792630476189,"id":"3","progress":0.9696330138254352,"total":915,"current":901}
+{"_e":"metro:bundling:progress","_t":1792630476303,"id":"2","progress":0.9033451787222158,"total":854,"current":795}
+{"_e":"metro:bundling:progress","_t":1792630476303,"id":"3","progress":0.9696330138254352,"total":940,"current":924}
+{"_e":"metro:bundling:progress","_t":1792630476411,"id":"2","progress":0.9956140403725173,"total":911,"current":909}
+{"_e":"metro:bundling:progress","_t":1792630476411,"id":"3","progress":0.9696330138254352,"total":940,"current":924}
+{"_e":"metro:bundling:progress","_t":1792630478412,"id":"2","progress":0.9978058152522952,"total":911,"current":910}
+{"_e":"metro:bundling:progress","_t":1792630478413,"id":"3","progress":0.9696330138254352,"total":940,"current":924}
+{"_e":"metro:bundling:progress","_t":1792630478520,"id":"2","progress":0.9978058152522952,"total":911,"current":910}
+{"_e":"metro:bundling:progress","_t":1792630478520,"id":"3","progress":0.9978869525184486,"total":946,"current":945}
+{"_e":"metro:bundling:progress","_t":1792630478616,"id":"2","progress":0.999,"total":911,"current":911}
+{"_e":"metro:bundling:progress","_t":1792630478616,"id":"3","progress":0.9978869525184486,"total":946,"current":945}
+{"_e":"metro:bundling:progress","_t":1792630478817,"id":"2","progress":0.999,"total":911,"current":911}
+{"_e":"metro:bundling:progress","_t":1792630478817,"id":"3","progress":0.999,"total":946,"current":946}
+{"_e":"metro:bundling:done","_t":1792630478922,"id":"3","total":946,"ms":8844.7906}
+{"_e":"metro:bundling:progress","_t":1792630478923,"id":"2","progress":0.999,"total":911,"current":911}
+{"_e":"metro:bundling:done","_t":1792630480350,"id":"2","total":911,"ms":10277.3391}
+{"_e":"metro:bundling:started","_t":1792630480440,"id":"4","platform":"web","environment":null,"entry":"node_modules\\expo-router\\entry.js"}
+{"_e":"metro:bundling:progress","_t":1792630480440,"id":"4","progress":0,"total":1,"current":0}
+{"_e":"metro:bundling:progress","_t":1792630480488,"id":"4","progress":0,"total":1,"current":0}
+{"_e":"metro:bundling:progress","_t":1792630480588,"id":"4","progress":0.056821254732287725,"total":172,"current":41}
+{"_e":"metro:bundling:progress","_t":1792630480689,"id":"4","progress":0.14098442477356468,"total":261,"current":98}
+{"_e":"metro:bundling:progress","_t":1792630480789,"id":"4","progress":0.22614159971644612,"total":368,"current":175}
+{"_e":"metro:bundling:progress","_t":1792630480900,"id":"4","progress":0.37785526857505664,"total":449,"current":276}
+{"_e":"metro:bundling:progress","_t":1792630480998,"id":"4","progress":0.455218464218319,"total":498,"current":336}
+{"_e":"metro:bundling:progress","_t":1792630481099,"id":"4","progress":0.5061033286788883,"total":596,"current":424}
+{"_e":"metro:bundling:progress","_t":1792630481199,"id":"4","progress":0.7227599622179203,"total":654,"current":556}
+{"_e":"metro:bundling:progress","_t":1792630481357,"id":"4","progress":0.79692018640977,"total":699,"current":624}
+{"_e":"metro:bundling:progress","_t":1792630481456,"id":"4","progress":0.8585977611312179,"total":763,"current":707}
+{"_e":"metro:bundling:progress","_t":1792630481559,"id":"4","progress":0.8669726524139877,"total":871,"current":811}
+{"_e":"metro:bundling:progress","_t":1792630481664,"id":"4","progress":0.999,"total":911,"current":911}
+{"_e":"metro:bundling:done","_t":1792630481782,"id":"4","total":911,"ms":1341.5566}
+{"_e":"metro:client_log","_t":1792630482213,"level":"info","data":["%cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools","font-weight:bold"]}
+{"_e":"metro:client_log","_t":1792630482215,"level":"log","data":["Running application \"main\" with appParams:\n","{\"hydrate\": undefined, \"rootTag\": \"#root\"}","\nDevelopment-level warnings: ON.\nPerformance optimizations: OFF."]}
+{"_e":"metro:client_log","_t":1792630482232,"level":"warn","data":["Route \"./styles/theme.ts\" is missing the required default export. Ensure a React component is exported as default."]}
+{"_e":"metro:client_log","_t":1792630578756,"level":"error","data":["[TypeError: StyleSheet.create is not a function]","\n\n\u001b[1mCode: category.tsx\u001b[22m\n\u001b[0m \u001b[90m 10 |\u001b[39m }\n \u001b[90m 11 |\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 12 |\u001b[39m \u001b[36mconst\u001b[39m styles \u001b[33m=\u001b[39m \u001b[33mStyleSheet\u001b[39m\u001b[33m.\u001b[39mcreate({\n \u001b[90m    |\u001b[39m                           \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 13 |\u001b[39m   container\u001b[33m:\u001b[39m {\n \u001b[90m 14 |\u001b[39m     flex\u001b[33m:\u001b[39m \u001b[35m1\u001b[39m\u001b[33m,\u001b[39m\n \u001b[90m 15 |\u001b[39m     backgroundColor\u001b[33m:\u001b[39m \u001b[32m'#25292e'\u001b[39m\u001b[33m,\u001b[39m\u001b[0m\n\u001b[1mCall Stack\u001b[22m\n\u001b[90m  <global> (src\\app\\(tabs)\\category.tsx:12:27)\u001b[39m"]}
+{"_e":"metro:client_log","_t":1792630583352,"level":"warn","data":["Route \"./styles/theme.ts\" is missing the required default export. Ensure a React component is exported as default."]}
+{"_e":"metro:bundling:started","_t":1792630625752,"id":"d","platform":"web","environment":null,"entry":"node_modules\\expo-router\\entry.js"}
+{"_e":"metro:bundling:progress","_t":1792630625753,"id":"d","progress":0,"total":1,"current":0}
+{"_e":"metro:bundling:started","_t":1792630625754,"id":"e","platform":"web","environment":"node","entry":"node_modules\\expo\\node_modules\\@expo\\cli\\node_modules\\@expo\\router-server\\node\\render.js"}
+{"_e":"metro:bundling:progress","_t":1792630625755,"id":"d","progress":0,"total":1,"current":0}
+{"_e":"metro:bundling:progress","_t":1792630625755,"id":"e","progress":0,"total":1,"current":0}
+{"_e":"metro:bundling:progress","_t":1792630625756,"id":"d","progress":0,"total":1,"current":0}
+{"_e":"metro:bundling:progress","_t":1792630625756,"id":"e","progress":0,"total":1,"current":0}
+{"_e":"metro:bundling:progress","_t":1792630625857,"id":"d","progress":0,"total":1,"current":0}
+{"_e":"metro:bundling:progress","_t":1792630625858,"id":"e","progress":0,"total":1,"current":0}
+{"_e":"metro:bundling:progress","_t":1792630626020,"id":"d","progress":0,"total":1,"current":0}
+{"_e":"metro:bundling:progress","_t":1792630626021,"id":"e","progress":0,"total":1,"current":0}
+{"_e":"metro:bundling:done","_t":1792630626067,"id":"d","total":1,"ms":314.5288}
+{"_e":"metro:bundling:progress","_t":1792630626068,"id":"e","progress":0,"total":1,"current":0}
+{"_e":"metro:bundling:done","_t":1792630626196,"id":"e","total":1,"ms":441.9287}
+{"_e":"metro:bundling:started","_t":1792630627830,"id":"f","platform":"web","environment":null,"entry":"node_modules\\expo-router\\entry.js"}
+{"_e":"metro:bundling:progress","_t":1792630627830,"id":"f","progress":0,"total":1,"current":0}
+{"_e":"metro:bundling:done","_t":1792630627962,"id":"f","total":1,"ms":132.1665}
+{"_e":"metro:client_log","_t":1792630628466,"level":"info","data":["%cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools","font-weight:bold"]}
+{"_e":"metro:client_log","_t":1792630628467,"level":"log","data":["Running application \"main\" with appParams:\n","{\"hydrate\": undefined, \"rootTag\": \"#root\"}","\nDevelopment-level warnings: ON.\nPerformance optimizations: OFF."]}
+{"_e":"metro:client_log","_t":1792630628497,"level":"warn","data":["Route \"./styles/theme.ts\" is missing the required default export. Ensure a React component is exported as default."]}
+{"_e":"metro:bundling:started","_t":1792630658892,"id":"k","platform":"web","environment":null,"entry":"node_modules\\expo-router\\entry.js"}
+{"_e":"metro:bundling:progress","_t":1792630658893,"id":"k","progress":0,"total":1,"current":0}
+{"_e":"metro:bundling:started","_t":1792630658894,"id":"l","platform":"web","environment":"node","entry":"node_modules\\expo\\node_modules\\@expo\\cli\\node_modules\\@expo\\router-server\\node\\render.js"}
+{"_e":"metro:bundling:progress","_t":1792630658894,"id":"k","progress":0,"total":1,"current":0}
+{"_e":"metro:bundling:progress","_t":1792630658894,"id":"l","progress":0,"total":1,"current":0}
+{"_e":"metro:bundling:progress","_t":1792630658895,"id":"k","progress":0,"total":1,"current":0}
+{"_e":"metro:bundling:progress","_t":1792630658895,"id":"l","progress":0,"total":1,"current":0}
+{"_e":"metro:bundling:progress","_t":1792630659062,"id":"k","progress":0,"total":1,"current":0}
+{"_e":"metro:bundling:progress","_t":1792630659063,"id":"l","progress":0,"total":1,"current":0}
+{"_e":"metro:bundling:done","_t":1792630659123,"id":"l","total":1,"ms":229.5353}
+{"_e":"metro:bundling:progress","_t":1792630659123,"id":"k","progress":0,"total":1,"current":0}
+{"_e":"metro:bundling:done","_t":1792630660713,"id":"k","total":1,"ms":1820.7891}
+{"_e":"metro:bundling:started","_t":1792630660771,"id":"m","platform":"web","environment":null,"entry":"node_modules\\expo-router\\entry.js"}
+{"_e":"metro:bundling:progress","_t":1792630660771,"id":"m","progress":0,"total":1,"current":0}
+{"_e":"metro:bundling:done","_t":1792630660904,"id":"m","total":1,"ms":132.6836}
+{"_e":"metro:client_log","_t":1792630661434,"level":"info","data":["%cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools","font-weight:bold"]}
+{"_e":"metro:client_log","_t":1792630661435,"level":"log","data":["Running application \"main\" with appParams:\n","{\"hydrate\": undefined, \"rootTag\": \"#root\"}","\nDevelopment-level warnings: ON.\nPerformance optimizations: OFF."]}
+{"_e":"metro:client_log","_t":1792630661464,"level":"warn","data":["Route \"./styles/theme.ts\" is missing the required default export. Ensure a React component is exported as default."]}
+{"_e":"metro:client_log","_t":1792631188548,"level":"warn","data":["Route \"./styles/theme.ts\" is missing the required default export. Ensure a React component is exported as default."]}
+{"_e":"metro:client_log","_t":1792631224762,"level":"warn","data":["Route \"./styles/theme.ts\" is missing the required default export. Ensure a React component is exported as default."]}
+{"_e":"metro:bundling:started","_t":1792631298995,"id":"r","platform":"web","environment":null,"entry":"node_modules\\expo-router\\entry.js"}
+{"_e":"metro:bundling:progress","_t":1792631298995,"id":"r","progress":0,"total":1,"current":0}
+{"_e":"metro:bundling:started","_t":1792631298996,"id":"s","platform":"web","environment":"node","entry":"node_modules\\expo\\node_modules\\@expo\\cli\\node_modules\\@expo\\router-server\\node\\render.js"}
+{"_e":"metro:bundling:progress","_t":1792631298996,"id":"r","progress":0,"total":1,"current":0}
+{"_e":"metro:bundling:progress","_t":1792631298996,"id":"s","progress":0,"total":1,"current":0}
+{"_e":"metro:bundling:progress","_t":1792631298997,"id":"r","progress":0,"total":1,"current":0}
+{"_e":"metro:bundling:progress","_t":1792631298997,"id":"s","progress":0,"total":1,"current":0}
+{"_e":"metro:bundling:progress","_t":1792631299099,"id":"r","progress":0,"total":1,"current":0}
+{"_e":"metro:bundling:progress","_t":1792631299100,"id":"s","progress":0,"total":1,"current":0}
+{"_e":"metro:bundling:progress","_t":1792631299244,"id":"r","progress":0,"total":1,"current":0}
+{"_e":"metro:bundling:progress","_t":1792631299244,"id":"s","progress":0,"total":1,"current":0}
+{"_e":"metro:bundling:done","_t":1792631299306,"id":"s","total":1,"ms":309.5749}
+{"_e":"metro:bundling:progress","_t":1792631299306,"id":"r","progress":0,"total":1,"current":0}
+{"_e":"metro:bundling:done","_t":1792631300802,"id":"r","total":1,"ms":1806.6278}
+{"_e":"metro:bundling:started","_t":1792631304392,"id":"u","platform":"web","environment":null,"entry":"node_modules\\expo-router\\entry.js"}
+{"_e":"metro:bundling:progress","_t":1792631304392,"id":"u","progress":0,"total":1,"current":0}
+{"_e":"metro:bundling:started","_t":1792631304393,"id":"v","platform":"web","environment":"node","entry":"node_modules\\expo\\node_modules\\@expo\\cli\\node_modules\\@expo\\router-server\\node\\render.js"}
+{"_e":"metro:bundling:progress","_t":1792631304393,"id":"u","progress":0,"total":1,"current":0}
+{"_e":"metro:bundling:progress","_t":1792631304393,"id":"v","progress":0,"total":1,"current":0}
+{"_e":"metro:bundling:done","_t":1792631304514,"id":"v","total":1,"ms":121.7414}
+{"_e":"metro:bundling:progress","_t":1792631304515,"id":"u","progress":0,"total":1,"current":0}
+{"_e":"metro:bundling:done","_t":1792631305281,"id":"u","total":1,"ms":888.858}
+{"_e":"metro:bundling:started","_t":1792631305334,"id":"w","platform":"web","environment":null,"entry":"node_modules\\expo-router\\entry.js"}
+{"_e":"metro:bundling:progress","_t":1792631305335,"id":"w","progress":0,"total":1,"current":0}
+{"_e":"metro:bundling:done","_t":1792631305473,"id":"w","total":1,"ms":138.649}
+{"_e":"metro:client_log","_t":1792631305900,"level":"info","data":["%cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools","font-weight:bold"]}
+{"_e":"metro:client_log","_t":1792631305901,"level":"log","data":["Running application \"main\" with appParams:\n","{\"hydrate\": undefined, \"rootTag\": \"#root\"}","\nDevelopment-level warnings: ON.\nPerformance optimizations: OFF."]}
+{"_e":"metro:client_log","_t":1792631305925,"level":"warn","data":["Route \"./styles/theme.ts\" is missing the required default export. Ensure a React component is exported as default."]}
+{"_e":"metro:client_log","_t":1792631490548,"level":"warn","data":["Route \"./styles/theme.ts\" is missing the required default export. Ensure a React component is exported as default."]}
+{"_e":"metro:client_log","_t":1792631496552,"level":"warn","data":["Route \"./styles/theme.ts\" is missing the required default export. Ensure a React component is exported as default."]}
+{"_e":"metro:client_log","_t":1792631508681,"level":"warn","data":["An error occurred in the <TabBarIcon> component.\n\nConsider adding an error boundary to your tree to customize error handling behavior.\nVisit https://react.dev/link/error-boundaries to learn more about error boundaries.\n"]}
+{"_e":"metro:client_log","_t":1792631508745,"level":"error","data":["[ReferenceError: IconSizes is not defined]","\n\n\u001b[1mCode: _layout.tsx\u001b[22m\n\u001b[0m \u001b[90m 61 |\u001b[39m           title\u001b[33m:\u001b[39m \u001b[32m'Wellness'\u001b[39m\u001b[33m,\u001b[39m\n \u001b[90m 62 |\u001b[39m           tabBarIcon\u001b[33m:\u001b[39m ({ color\u001b[33m,\u001b[39m focused }) \u001b[33m=>\u001b[39m (\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 63 |\u001b[39m             \u001b[33m<\u001b[39m\u001b[33mFeather\u001b[39m name\u001b[33m=\u001b[39m\u001b[32m\"heart\"\u001b[39m size\u001b[33m=\u001b[39m{\u001b[33mIconSizes\u001b[39m\u001b[33m.\u001b[39mmedium} color\u001b[33m=\u001b[39m{color}\u001b[33m/\u001b[39m\u001b[33m>\u001b[39m\n \u001b[90m    |\u001b[39m                                         \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 64 |\u001b[39m           )\u001b[33m,\u001b[39m\n \u001b[90m 65 |\u001b[39m         }}\n \u001b[90m 66 |\u001b[39m       \u001b[33m/\u001b[39m\u001b[33m>\u001b[39m\u001b[0m\n\u001b[1mCall Stack\u001b[22m\n\u001b[90m  Tabs.Screen.props.options.tabBarIcon (src\\app\\(tabs)\\_layout.tsx:63:41)\u001b[39m","\n\n\u001b[1mCode: _layout.tsx\u001b[22m\n\u001b[0m \u001b[90m  7 |\u001b[39m \u001b[36mexport\u001b[39m \u001b[36mdefault\u001b[39m \u001b[36mfunction\u001b[39m \u001b[33mTabLayout\u001b[39m() {\n \u001b[90m  8 |\u001b[39m   \u001b[36mreturn\u001b[39m (\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m  9 |\u001b[39m     \u001b[33m<\u001b[39m\u001b[33mTabs\u001b[39m\n \u001b[90m    |\u001b[39m     \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 10 |\u001b[39m       screenOptions\u001b[33m=\u001b[39m{{\n \u001b[90m 11 |\u001b[39m       tabBarShowLabel\u001b[33m:\u001b[39m \u001b[36mfalse\u001b[39m\u001b[33m,\u001b[39m\n \u001b[90m 12 |\u001b[39m       tabBarActiveTintColor\u001b[33m:\u001b[39m \u001b[33mColors\u001b[39m\u001b[33m.\u001b[39maccent\u001b[33m,\u001b[39m\u001b[0m\n\u001b[1mCall Stack\u001b[22m\n\u001b[90m  TabLayout (src\\app\\(tabs)\\_layout.tsx:9:5)\u001b[39m"]}
+{"_e":"metro:client_log","_t":1792631539553,"level":"warn","data":["Route \"./styles/theme.ts\" is missing the required default export. Ensure a React component is exported as default."]}
+{"_e":"metro:bundling:started","_t":1792631563889,"id":"16","platform":"web","environment":null,"entry":"node_modules\\expo-router\\entry.js"}
+{"_e":"metro:bundling:progress","_t":1792631563890,"id":"16","progress":0,"total":1,"current":0}
+{"_e":"metro:bundling:started","_t":1792631563891,"id":"17","platform":"web","environment":"node","entry":"node_modules\\expo\\node_modules\\@expo\\cli\\node_modules\\@expo\\router-server\\node\\render.js"}
+{"_e":"metro:bundling:progress","_t":1792631563892,"id":"16","progress":0,"total":1,"current":0}
+{"_e":"metro:bundling:progress","_t":1792631563892,"id":"17","progress":0,"total":1,"current":0}
+{"_e":"metro:bundling:progress","_t":1792631563893,"id":"16","progress":0,"total":1,"current":0}
+{"_e":"metro:bundling:progress","_t":1792631563893,"id":"17","progress":0,"total":1,"current":0}
+{"_e":"metro:bundling:done","_t":1792631564062,"id":"17","total":1,"ms":170.3371}
+{"_e":"metro:bundling:progress","_t":1792631564062,"id":"16","progress":0,"total":1,"current":0}
+{"_e":"metro:bundling:progress","_t":1792631564182,"id":"16","progress":0,"total":1,"current":0}
+{"_e":"metro:bundling:progress","_t":1792631564186,"id":"16","progress":0,"total":1,"current":0}
+{"_e":"metro:bundling:done","_t":1792631565768,"id":"16","total":1,"ms":1878.4001}
+{"_e":"metro:bundling:started","_t":1792631565823,"id":"18","platform":"web","environment":null,"entry":"node_modules\\expo-router\\entry.js"}
+{"_e":"metro:bundling:progress","_t":1792631565823,"id":"18","progress":0,"total":1,"current":0}
+{"_e":"metro:bundling:done","_t":1792631565944,"id":"18","total":1,"ms":121.2931}
+{"_e":"metro:client_log","_t":1792631566370,"level":"info","data":["%cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools","font-weight:bold"]}
+{"_e":"metro:client_log","_t":1792631566372,"level":"log","data":["Running application \"main\" with appParams:\n","{\"hydrate\": undefined, \"rootTag\": \"#root\"}","\nDevelopment-level warnings: ON.\nPerformance optimizations: OFF."]}
+{"_e":"metro:client_log","_t":1792631566396,"level":"warn","data":["Route \"./styles/theme.ts\" is missing the required default export. Ensure a React component is exported as default."]}
+{"_e":"metro:bundling:failed","_t":1792631630603,"id":null,"message":"Unable to resolve \"styles/theme\" from \"src\\app\\+not-found.tsx\"\n  1 | import { View, StyleSheet } from 'react-native';\n  2 | import { Link, Stack } from 'expo-router';\n> 3 | import { Colors, GlobalStyles } from 'styles/theme';\n    |                                       ^\n  4 |\n  5 |\n  6 | export default function NotFoundScreen() {","importStack":"\u001b[1mImport stack:\u001b[22m\n\n\u001b[90m \u001b[39msrc\\app\\+not-found.tsx\n\u001b[90m |\u001b[39m \u001b[36mimport\u001b[39m \u001b[32m\"styles/theme\"\u001b[39m\n\n\u001b[90m \u001b[39msrc\\app\u001b[2m (require.context)\u001b[22m\n","filename":null,"targetModuleName":"styles/theme","originModulePath":"src\\app\\+not-found.tsx"}
+{"_e":"metro:client_log","_t":1792631630607,"level":"error","data":["[UnableToResolveError: Unable to resolve module styles/theme from C:\\Users\\allis\\Downloads\\HCC26\\AppRepo\\TaskManagmentApp\\src\\app\\+not-found.tsx: styles/theme could not be found within the project or in these directories:\n  node_modules\n  1 | import { View, StyleSheet } from 'react-native';\n  2 | import { Link, Stack } from 'expo-router';\n> 3 | import { Colors, GlobalStyles } from 'styles/theme';\n    |                                       ^\n  4 |\n  5 |\n  6 | export default function NotFoundScreen() {]"]}
+{"_e":"metro:bundling:failed","_t":1792631644204,"id":null,"message":"Unable to resolve \"/styles/theme\" from \"src\\app\\+not-found.tsx\"\n  1 | import { View, StyleSheet } from 'react-native';\n  2 | import { Link, Stack } from 'expo-router';\n> 3 | import { Colors, GlobalStyles } from '/styles/theme';\n    |                                       ^\n  4 |\n  5 |\n  6 | export default function NotFoundScreen() {","importStack":"\u001b[1mImport stack:\u001b[22m\n\n\u001b[90m \u001b[39msrc\\app\\+not-found.tsx\n\u001b[90m |\u001b[39m \u001b[36mimport\u001b[39m \u001b[32m\"/styles/theme\"\u001b[39m\n\n\u001b[90m \u001b[39msrc\\app\u001b[2m (require.context)\u001b[22m\n","filename":null,"targetModuleName":"..\\..\\..\\..\\..\\..\\styles\\theme","originModulePath":"src\\app\\+not-found.tsx"}
+{"_e":"metro:client_log","_t":1792631644207,"level":"error","data":["[UnableToResolveError: Unable to resolve module /styles/theme from C:\\Users\\allis\\Downloads\\HCC26\\AppRepo\\TaskManagmentApp\\src\\app\\+not-found.tsx: \n\nNone of these files exist:\n  * ..\\..\\..\\..\\..\\..\\styles\\theme(.web.ts|.ts|.web.tsx|.tsx|.web.mjs|.mjs|.web.js|.js|.web.jsx|.jsx|.web.json|.json|.web.cjs|.cjs|.web.scss|.scss|.web.sass|.sass|.web.css|.css)\n  * ..\\..\\..\\..\\..\\..\\styles\\theme\n  1 | import { View, StyleSheet } from 'react-native';\n  2 | import { Link, Stack } from 'expo-router';\n> 3 | import { Colors, GlobalStyles } from '/styles/theme';\n    |                                       ^\n  4 |\n  5 |\n  6 | export default function NotFoundScreen() {]"]}
+{"_e":"metro:bundling:started","_t":1792631713705,"id":"1g","platform":"web","environment":null,"entry":"node_modules\\expo-router\\entry.js"}
+{"_e":"metro:bundling:progress","_t":1792631713705,"id":"1g","progress":0,"total":1,"current":0}
+{"_e":"metro:bundling:started","_t":1792631713705,"id":"1h","platform":"web","environment":"node","entry":"node_modules\\expo\\node_modules\\@expo\\cli\\node_modules\\@expo\\router-server\\node\\render.js"}
+{"_e":"metro:bundling:progress","_t":1792631713705,"id":"1g","progress":0,"total":1,"current":0}
+{"_e":"metro:bundling:progress","_t":1792631713705,"id":"1h","progress":0,"total":1,"current":0}
+{"_e":"metro:bundling:progress","_t":1792631713708,"id":"1g","progress":0,"total":1,"current":0}
+{"_e":"metro:bundling:progress","_t":1792631713708,"id":"1h","progress":0,"total":1,"current":0}
+{"_e":"metro:bundling:done","_t":1792631713801,"id":"1h","total":1,"ms":96.1628}
+{"_e":"metro:bundling:progress","_t":1792631713802,"id":"1g","progress":0,"total":1,"current":0}
+{"_e":"metro:bundling:progress","_t":1792631713862,"id":"1g","progress":0,"total":1,"current":0}
+{"_e":"metro:bundling:done","_t":1792631715381,"id":"1g","total":1,"ms":1676.5598}
+{"_e":"metro:bundling:started","_t":1792631715438,"id":"1i","platform":"web","environment":null,"entry":"node_modules\\expo-router\\entry.js"}
+{"_e":"metro:bundling:progress","_t":1792631715438,"id":"1i","progress":0,"total":1,"current":0}
+{"_e":"metro:bundling:done","_t":1792631715584,"id":"1i","total":1,"ms":145.4786}
+{"_e":"metro:client_log","_t":1792631716148,"level":"info","data":["%cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools","font-weight:bold"]}
+{"_e":"metro:client_log","_t":1792631716153,"level":"log","data":["Running application \"main\" with appParams:\n","{\"hydrate\": undefined, \"rootTag\": \"#root\"}","\nDevelopment-level warnings: ON.\nPerformance optimizations: OFF."]}
+{"_e":"metro:client_log","_t":1792631716177,"level":"warn","data":["Route \"./styles/theme.ts\" is missing the required default export. Ensure a React component is exported as default."]}
+{"_e":"metro:bundling:started","_t":1792631719841,"id":"1n","platform":"web","environment":null,"entry":"node_modules\\expo-router\\entry.js"}
+{"_e":"metro:bundling:progress","_t":1792631719841,"id":"1n","progress":0,"total":1,"current":0}
+{"_e":"metro:bundling:started","_t":1792631719842,"id":"1o","platform":"web","environment":"node","entry":"node_modules\\expo\\node_modules\\@expo\\cli\\node_modules\\@expo\\router-server\\node\\render.js"}
+{"_e":"metro:bundling:progress","_t":1792631719842,"id":"1n","progress":0,"total":1,"current":0}
+{"_e":"metro:bundling:progress","_t":1792631719842,"id":"1o","progress":0,"total":1,"current":0}
+{"_e":"metro:bundling:done","_t":1792631719953,"id":"1o","total":1,"ms":111.4604}
+{"_e":"metro:bundling:progress","_t":1792631719953,"id":"1n","progress":0,"total":1,"current":0}
+{"_e":"metro:bundling:done","_t":1792631720652,"id":"1n","total":1,"ms":810.6155}
+{"_e":"metro:bundling:started","_t":1792631720753,"id":"1q","platform":"web","environment":null,"entry":"node_modules\\expo-router\\entry.js"}
+{"_e":"metro:bundling:progress","_t":1792631720753,"id":"1q","progress":0,"total":1,"current":0}
+{"_e":"metro:bundling:started","_t":1792631720753,"id":"1r","platform":"web","environment":"node","entry":"node_modules\\expo\\node_modules\\@expo\\cli\\node_modules\\@expo\\router-server\\node\\render.js"}
+{"_e":"metro:bundling:progress","_t":1792631720753,"id":"1q","progress":0,"total":1,"current":0}
+{"_e":"metro:bundling:progress","_t":1792631720753,"id":"1r","progress":0,"total":1,"current":0}
+{"_e":"metro:bundling:done","_t":1792631720855,"id":"1r","total":1,"ms":102.1286}
+{"_e":"metro:bundling:progress","_t":1792631720855,"id":"1q","progress":0,"total":1,"current":0}
+{"_e":"metro:bundling:done","_t":1792631721394,"id":"1q","total":1,"ms":640.8775}
+{"_e":"metro:bundling:started","_t":1792631721439,"id":"1s","platform":"web","environment":null,"entry":"node_modules\\expo-router\\entry.js"}
+{"_e":"metro:bundling:progress","_t":1792631721439,"id":"1s","progress":0,"total":1,"current":0}
+{"_e":"metro:bundling:done","_t":1792631721541,"id":"1s","total":1,"ms":102.3938}
+{"_e":"metro:client_log","_t":1792631721860,"level":"info","data":["%cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools","font-weight:bold"]}
+{"_e":"metro:client_log","_t":1792631721860,"level":"log","data":["Running application \"main\" with appParams:\n","{\"hydrate\": undefined, \"rootTag\": \"#root\"}","\nDevelopment-level warnings: ON.\nPerformance optimizations: OFF."]}
+{"_e":"metro:client_log","_t":1792631721865,"level":"warn","data":["Route \"./styles/theme.ts\" is missing the required default export. Ensure a React component is exported as default."]}

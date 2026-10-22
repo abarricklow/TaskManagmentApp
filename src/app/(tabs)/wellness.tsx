@@ -1,21 +1,10 @@
-import { Text, View, StyleSheet } from 'react-native';
+import { Text, View} from 'react-native';
+import { Colors, GlobalStyles } from '../styles/theme';
 
 export default function WellnessScreen() {
   return (
-    <View style={styles.container}>
-      <Text style={styles.text}>Mental Wellness Hub</Text>
+    <View style={GlobalStyles.container}>
+      <Text style={GlobalStyles.heading}>Mental Wellness Hub</Text>
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#25292e',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  text: {
-    color: '#fff',
-  },
-});
