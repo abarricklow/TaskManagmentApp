@@ -6,7 +6,9 @@ import { initializeDatabase } from '../db/initialize';
 export default function RootLayout() {
   return (
     <SQLiteProvider databaseName="taskmanager.db" onInit={initializeDatabase}>
-      <Stack />;
+      <Stack>
+      <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+    </Stack>
     </SQLiteProvider>
   );
 }

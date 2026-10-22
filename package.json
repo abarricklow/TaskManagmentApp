@@ -6,6 +6,7 @@
     "@expo/metro-runtime": "^57.0.17",
     "@expo/ui": "~57.0.26",
     "expo": "~57.0.31",
+    "@expo/vector-icons": "^15.0.2",
     "expo-constants": "~57.0.20",
     "expo-dev-client": "~57.0.20",
     "expo-device": "~57.0.2",
