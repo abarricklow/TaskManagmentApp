@@ -1,9 +1,14 @@
-import { Stack } from 'expo-router';
+import { Stack } from "expo-router";
+import React from 'react';
+import { SQLiteProvider } from 'expo-sqlite';
+import { initializeDatabase } from '../db/initialize';
 
 export default function RootLayout() {
   return (
-    <Stack>
+    <SQLiteProvider databaseName="taskmanager.db" onInit={initializeDatabase}>
+      <Stack>
       <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
     </Stack>
+    </SQLiteProvider>
   );
 }
