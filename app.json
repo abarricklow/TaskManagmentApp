@@ -4,38 +4,40 @@
     "slug": "HelloWorld",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
     "scheme": "helloworld",
     "userInterfaceStyle": "automatic",
     "ios": {
-      "icon": "./assets/expo.icon",
-      "bundleIdentifier": "com.anonymous.HelloWorld"
+      "bundleIdentifier": "com.anonymous.HelloWorld",
+      "deploymentTarget": "17.0"
     },
     "android": {
-      "adaptiveIcon": {
-        "backgroundColor": "#E6F4FE",
-        "foregroundImage": "./assets/android-icon-foreground.png",
-        "backgroundImage": "./assets/android-icon-background.png",
-        "monochromeImage": "./assets/android-icon-monochrome.png"
-      },
       "predictiveBackGestureEnabled": false,
       "package": "com.anonymous.HelloWorld"
     },
     "web": {
-      "output": "single",
-      "favicon": "./assets/favicon.png"
+      "output": "single"
     },
     "plugins": [
       "expo-router",
       [
         "expo-splash-screen",
         {
-          "backgroundColor": "#208AEF",
-          "image": "./assets/splash-icon.png",
-          "imageWidth": 76
+          "backgroundColor": "#208AEF"
         }
       ],
-      "expo-sqlite"
+      "expo-sqlite",
+      [
+        "expo-build-properties",
+        {
+          "android": {
+            "minSdkVersion": 26
+          },
+          "ios": {
+            "enableSceneSupport": true
+          }
+        }
+      ],
+      "@react-native-community/datetimepicker"
     ],
     "experiments": {
       "typedRoutes": true,

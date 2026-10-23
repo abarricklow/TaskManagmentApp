@@ -23,4 +23,15 @@ You will need npm on your machine. If you have homebrew, you can run
 
 In the output, you'll find options to open the app in on localhost (mine says "http://localhost:8081", but it's possible you may see a different port.)
 
+## Quick add and on-device brain dump
+Quick add saves a task name, optional due date, and selected category to the local SQLite database. Personal, Work, School, and Other categories are available by default; custom categories can also be created. Saved tasks appear on the Home tab. Brain dump uses a quantized language model through React Native ExecuTorch. The brain-dump text is processed on the device and is not sent to an AI server. The model files are downloaded from the model registry on first use and cached on the device; the first setup requires internet access and several hundred megabytes of free storage.
 
+This native module does not run in Expo Go or on web. Use a physical iOS/Android development build (or a compatible simulator):
+
+```bash
+npx expo run:ios
+# or
+npx expo run:android
+```
+
+The native runtime requires iOS 17 or later or Android 13 or later. The app is configured for the React Native New Architecture and includes the required Worklets Babel plugin. The first model load may take a while; later launches use the cached model. On-device model output may vary by device and should be reviewed before saving.
