@@ -1,6 +1,7 @@
 import { useCallback, useState } from 'react';
 import {
   ActivityIndicator,
+  Pressable,
   RefreshControl,
   ScrollView,
   StyleSheet,
@@ -14,6 +15,8 @@ import { Colors, FontSizes, Spacing } from '../styles/theme';
 type Task = {
   id: number;
   name: string;
+  categoryName: string | null;
+  dueDate: string | null;
 };
 
 export default function Index() {
@@ -21,13 +24,19 @@ export default function Index() {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [completingTaskIds, setCompletingTaskIds] = useState<number[]>([]);
 
   const loadTasks = useCallback(async () => {
     setIsLoading(true);
     setError(null);
     try {
       const savedTasks = await db.getAllAsync<Task>(
-        'SELECT id, name FROM Tasks ORDER BY id DESC'
+        `SELECT Tasks.id, Tasks.name, Category.name AS categoryName,
+          Tasks.due_date AS dueDate
+        FROM Tasks
+        LEFT JOIN Category ON Category.id = Tasks.category_id
+        WHERE Tasks.completed = 0
+        ORDER BY Tasks.id DESC`
       );
       setTasks(savedTasks);
     } catch (loadError) {
@@ -37,6 +46,20 @@ export default function Index() {
       setIsLoading(false);
     }
   }, [db]);
+
+  async function completeTask(taskId: number) {
+    setCompletingTaskIds((current) => [...current, taskId]);
+    setError(null);
+    try {
+      await db.runAsync('UPDATE Tasks SET completed = 1 WHERE id = ?', taskId);
+      setTasks((current) => current.filter((task) => task.id !== taskId));
+    } catch (completionError) {
+      console.error('Unable to complete task:', completionError);
+      setError('The task could not be marked complete. Please try again.');
+    } finally {
+      setCompletingTaskIds((current) => current.filter((id) => id !== taskId));
+    }
+  }
 
   useFocusEffect(
     useCallback(() => {
@@ -83,8 +106,31 @@ export default function Index() {
         <View style={styles.taskList}>
           {tasks.map((task) => (
             <View key={task.id} style={styles.taskCard}>
-              <View style={styles.taskMarker} />
-              <Text style={styles.taskName}>{task.name}</Text>
+              <Pressable
+                accessibilityLabel={`Mark ${task.name} as complete`}
+                accessibilityRole="checkbox"
+                accessibilityState={{
+                  checked: false,
+                  disabled: completingTaskIds.includes(task.id),
+                }}
+                disabled={completingTaskIds.includes(task.id)}
+                onPress={() => void completeTask(task.id)}
+                style={({ pressed }) => [
+                  styles.checkbox,
+                  pressed && styles.checkboxPressed,
+                  completingTaskIds.includes(task.id) && styles.checkboxDisabled,
+                ]}
+              />
+              <View style={styles.taskDetails}>
+                <Text style={styles.taskName}>{task.name}</Text>
+                {(task.categoryName || task.dueDate) && (
+                  <Text style={styles.taskMetadata}>
+                    {[task.categoryName, task.dueDate && `Due ${formatDate(task.dueDate)}`]
+                      .filter(Boolean)
+                      .join(' · ')}
+                  </Text>
+                )}
+              </View>
             </View>
           ))}
         </View>
@@ -145,16 +191,32 @@ const styles = StyleSheet.create({
     gap: Spacing.sm,
     padding: Spacing.md,
   },
-  taskMarker: {
-    backgroundColor: Colors.primary,
-    borderRadius: 4,
-    height: 8,
-    width: 8,
+  checkbox: {
+    alignItems: 'center',
+    borderColor: Colors.primary,
+    borderRadius: 5,
+    borderWidth: 2,
+    height: 24,
+    justifyContent: 'center',
+    width: 24,
+  },
+  checkboxPressed: {
+    backgroundColor: '#E8F3E5',
+  },
+  checkboxDisabled: {
+    opacity: 0.5,
   },
   taskName: {
     color: Colors.text,
-    flex: 1,
     fontSize: FontSizes.body,
+  },
+  taskDetails: {
+    flex: 1,
+    gap: Spacing.xs,
+  },
+  taskMetadata: {
+    color: Colors.textSecondary,
+    fontSize: FontSizes.small,
   },
   emptyCard: {
     backgroundColor: '#FFFFFF',
@@ -174,3 +236,8 @@ const styles = StyleSheet.create({
     fontSize: FontSizes.body,
   },
 });
+
+function formatDate(value: string) {
+  const [year, month, day] = value.split('-').map(Number);
+  return new Date(year, month - 1, day).toLocaleDateString();
+}
