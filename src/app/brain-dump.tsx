@@ -9,12 +9,19 @@ export default function BrainDumpScreen() {
   const db = useSQLiteContext();
   const [isWorking, setIsWorking] = useState(false);
 
-  async function saveBrainDumpTasks(taskNames: string[]) {
+  async function saveBrainDumpTasks(
+    tasks: { name: string; categoryId: number | null; dueDate: string | null }[]
+  ) {
     setIsWorking(true);
     try {
       await db.withTransactionAsync(async () => {
-        for (const task of taskNames) {
-          await db.runAsync('INSERT INTO Tasks (name) VALUES (?)', task.trim());
+        for (const task of tasks) {
+          await db.runAsync(
+            'INSERT INTO Tasks (name, category_id, due_date) VALUES (?, ?, ?)',
+            task.name.trim(),
+            task.categoryId,
+            task.dueDate
+          );
         }
       });
       router.back();

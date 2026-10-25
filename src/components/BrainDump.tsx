@@ -2,7 +2,9 @@ import { StyleSheet, Text, View } from 'react-native';
 import { Colors, FontSizes, Spacing } from '../app/styles/theme';
 
 export default function BrainDump(_: {
-  onSaveTasks: (tasks: string[]) => Promise<void>;
+  onSaveTasks: (
+    tasks: { name: string; categoryId: number | null; dueDate: string | null }[]
+  ) => Promise<void>;
   onWorkingChange: (isWorking: boolean) => void;
 }) {
   return (

@@ -1,8 +1,8 @@
 import { Tabs } from 'expo-router';
 import { Colors, IconSizes, GlobalStyles } from '../styles/theme';
 import AntDesign from '@expo/vector-icons/AntDesign';
-import Feather from '@expo/vector-icons/Feather';
 import Entypo from '@expo/vector-icons/Entypo';
+import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 
 export default function TabLayout() {
   return (
@@ -60,7 +60,7 @@ export default function TabLayout() {
         options={{
           title: 'Wellness',
           tabBarIcon: ({ color, focused }) => (
-            <Feather name="heart" size={IconSizes.medium} color={color}/>
+            <MaterialCommunityIcons name="brain" size={IconSizes.medium} color={color}/>
           ),
         }}
       />
