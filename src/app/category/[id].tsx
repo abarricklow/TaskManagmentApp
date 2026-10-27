@@ -1,12 +1,13 @@
 import { useCallback, useState } from 'react';
-import { ActivityIndicator, RefreshControl, ScrollView, StyleSheet, Text, View,} from 'react-native';
+import { ActivityIndicator, Pressable, RefreshControl, ScrollView, StyleSheet, Text, View,} from 'react-native';
 import { Stack, useFocusEffect, useLocalSearchParams } from 'expo-router';
 import { useSQLiteContext } from 'expo-sqlite';
-import { BorderWidths, Colors, FontSizes, FontWeights, Radius, Spacing,} from '../styles/theme';
+import { BorderWidths, Colors, FontSizes, FontWeights, Radius, Spacing, } from '../styles/theme';
 
 type Task = {
   id: number;
-  name: string;
+  name: string;  
+  categoryName: string | null;
   dueDate: string | null;
 };
 
@@ -15,7 +16,8 @@ export default function CategoryDetailScreen() {
   const { id, name } = useLocalSearchParams<{ id: string; name?: string }>();
   const [tasks, setTasks] = useState<Task[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);  
+  const [completingTaskIds, setCompletingTaskIds] = useState<number[]>([]);
 
   const categoryName = name ?? 'Category';
 
@@ -38,6 +40,20 @@ export default function CategoryDetailScreen() {
       setIsLoading(false);
     }
   }, [db, id]);
+
+  async function completeTask(taskId: number) {
+    setCompletingTaskIds((current) => [...current, taskId]);
+    setError(null);
+    try {
+      await db.runAsync('UPDATE Tasks SET completed = 1 WHERE id = ?', taskId);
+      setTasks((current) => current.filter((task) => task.id !== taskId));
+    } catch (completionError) {
+      console.error('Unable to complete task:', completionError);
+      setError('The task could not be marked complete. Please try again.');
+    } finally {
+      setCompletingTaskIds((current) => current.filter((id) => id !== taskId));
+    }
+  }
 
   useFocusEffect(
     useCallback(() => {
@@ -78,16 +94,37 @@ export default function CategoryDetailScreen() {
             </Text>
           </View>
         ) : (
-          <View style={styles.list}>
-            {tasks.map((task) => (
-              <View key={task.id} style={styles.card}>
+        <View style={styles.taskList}>
+          {tasks.map((task) => (
+            <View key={task.id} style={styles.taskCard}>
+              <Pressable
+                accessibilityLabel={`Mark ${task.name} as complete`}
+                accessibilityRole="checkbox"
+                accessibilityState={{
+                  checked: false,
+                  disabled: completingTaskIds.includes(task.id),
+                }}
+                disabled={completingTaskIds.includes(task.id)}
+                onPress={() => void completeTask(task.id)}
+                style={({ pressed }) => [
+                  styles.checkbox,
+                  pressed && styles.checkboxPressed,
+                  completingTaskIds.includes(task.id) && styles.checkboxDisabled,
+                ]}
+              />
+              <View style={styles.taskDetails}>
                 <Text style={styles.taskName}>{task.name}</Text>
-                {task.dueDate && (
-                  <Text style={styles.metadata}>Due {formatDate(task.dueDate)}</Text>
+                {(task.categoryName || task.dueDate) && (
+                  <Text style={styles.taskMetadata}>
+                    {[task.categoryName, task.dueDate && `Due ${formatDate(task.dueDate)}`]
+                      .filter(Boolean)
+                      .join(' · ')}
+                  </Text>
                 )}
               </View>
-            ))}
-          </View>
+            </View>
+          ))}
+        </View>
         )}
       </ScrollView>
     </>
@@ -126,10 +163,10 @@ const styles = StyleSheet.create({
     gap: Spacing.xs,
     padding: Spacing.md,
   },
-  taskName: {
-    color: Colors.text,
-    fontSize: FontSizes.body,
-  },
+ // taskName: {
+  //  color: Colors.text,
+  //  fontSize: FontSizes.body,
+  //},
   metadata: {
     color: Colors.textSecondary,
     fontSize: FontSizes.small,
@@ -137,5 +174,56 @@ const styles = StyleSheet.create({
   error: {
     color: Colors.error,
     fontSize: FontSizes.body,
+  },
+
+
+
+  taskList: {
+    gap: Spacing.sm,
+  },
+  taskCard: {
+    alignItems: 'center',
+    backgroundColor: '#FFFFFF',
+    borderColor: Colors.border,
+    borderRadius: 12,
+    borderWidth: 1,
+    flexDirection: 'row',
+    gap: Spacing.sm,
+    padding: Spacing.md,
+  },
+  checkbox: {
+    alignItems: 'center',
+    borderColor: Colors.primary,
+    borderRadius: 5,
+    borderWidth: 2,
+    height: 24,
+    justifyContent: 'center',
+    width: 24,
+  },
+  checkboxPressed: {
+    backgroundColor: '#E8F3E5',
+  },
+  checkboxDisabled: {
+    opacity: 0.5,
+  },
+  taskName: {
+    color: Colors.text,
+    fontSize: FontSizes.body,
+  },
+  taskDetails: {
+    flex: 1,
+    gap: Spacing.xs,
+  },
+  taskMetadata: {
+    color: Colors.textSecondary,
+    fontSize: FontSizes.small,
+  },
+  emptyCard: {
+    backgroundColor: '#FFFFFF',
+    borderColor: Colors.border,
+    borderRadius: 12,
+    borderWidth: 1,
+    gap: Spacing.sm,
+    padding: Spacing.md,
   },
 });
