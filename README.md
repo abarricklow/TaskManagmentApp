@@ -21,7 +21,7 @@ You will need npm on your machine. If you have homebrew, you can run
    npx expo start
    ```
 
-In the output, you'll find options to open the app in on localhost (mine says "http://localhost:8081", but it's possible you may see a different port.)
+In the output, Expo prints a QR code for Expo Go and reports a URL such as `exp://192.168.0.127:8081`. Scan that QR code with the Camera app and open the link in Expo Go. Keep the phone and Mac on the same Wi-Fi network. Do not scan the `http://localhost:8081` web address. Expo automatically advertises the Mac's current LAN address.
 
 ## Quick add and brain dump
 Quick add saves a task name, optional due date, and selected category to the local SQLite database. Personal, Work, School, and Other categories are available by default; custom categories can also be created. Saved tasks appear on the Home tab.
