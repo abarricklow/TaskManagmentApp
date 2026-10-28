@@ -5,15 +5,15 @@ This is an [Expo](https://expo.dev) project created with [`create-expo-app`](htt
 ## Running Instructions
 Open a terminal in the app root directory. Run the commands below. 
 1. Install dependencies
-You will need npm on your machine. If you have homebrew, you can run
-   ```bash
-   brew install node
-   ```
-   Otherwise, you can follow the instructions to install npm here: https://www.youtube.com/watch?v=Ue6g4udgbdI
+Use Node.js 26.13.0 (the version pinned in `.nvmrc`) with npm 11. If you use nvm:
 
    ```bash
+   nvm install
+   nvm use
    npm install
    ```
+
+If nvm is not already installed, install it first, then run the commands above.
 
 2. Start the app
 
@@ -23,27 +23,56 @@ You will need npm on your machine. If you have homebrew, you can run
 
 In the output, Expo prints a QR code for Expo Go and reports a URL such as `exp://192.168.0.127:8081`. Scan that QR code with the Camera app and open the link in Expo Go. Keep the phone and Mac on the same Wi-Fi network. Do not scan the `http://localhost:8081` web address. Expo automatically advertises the Mac's current LAN address.
 
-## Quick add and brain dump
-Quick add saves a task name, optional due date, and selected category to the local SQLite database. Personal, Work, School, and Other categories are available by default; custom categories can also be created. Saved tasks appear on the Home tab.
+## Running the front end and back end
 
-On iOS and Android, brain dump uses a quantized language model through React Native ExecuTorch. The brain-dump text is processed on the device and is not sent to an AI server. The model files are downloaded from the model registry on first use and cached on the device; the first setup requires internet access and several hundred megabytes of free storage.
+Quick add saves a task name, optional due date, and selected category to the local SQLite database. Personal, Work, School, and Other categories are available by default; custom categories can also be created.
 
-On web, brain dump sends text to `server/index.ts`. The API holds the OpenAI credentials and prompts OpenAI to return a numbered task list. The browser never receives or stores the API key. Configure `.env` from `.env.example`, then start the backend and web app in separate terminals:
+Brain dump uses the Express API in `server/index.ts`. The API sends requests to a free model served locally by Ollama; no API key is needed. Keep Ollama and the API running while using brain dump.
+
+### One-time setup
+
+Install dependencies and configure the local environment from the app root:
 
 ```bash
+npm install
 cp .env.example .env
+```
+
+Install Ollama on macOS and download the configured model:
+
+```bash
+brew install ollama
+ollama pull llama3.2:1b
+```
+
+Start Ollama in its own terminal and leave it running:
+
+```bash
+ollama serve
+```
+
+`OLLAMA_HOST` defaults to `http://127.0.0.1:11434`, and `OLLAMA_MODEL` selects the downloaded model. The API limits brain dumps to 4,000 characters.
+
+### Start the back end
+
+In a new terminal at the app root, start the API:
+
+```bash
 npm run api
+```
+
+The API listens on `http://localhost:3001` by default. You can check that it is running by opening `http://localhost:3001/api/health`; it should return `{"status":"ok"}`.
+
+### Start the front end
+
+In another terminal at the app root, run the web app:
+
+```bash
 npm run web
 ```
 
-Set `ALLOWED_WEB_ORIGIN` to the URL shown by Expo. If the API is hosted separately, set `EXPO_PUBLIC_API_URL` to its public URL. The server rejects missing API-key configuration and limits brain dumps to 4,000 characters.
+Open the URL printed by Expo, usually `http://localhost:8081`. The web app uses `EXPO_PUBLIC_API_URL` from `.env` to connect to the API; the example value is `http://localhost:3001`. If you change the web app's origin or host the API elsewhere, update `ALLOWED_WEB_ORIGIN` and `EXPO_PUBLIC_API_URL` in `.env` to match.
 
-This native module does not run in Expo Go or on web. Use a physical iOS/Android development build (or a compatible simulator):
+To run on a phone with Expo Go instead of the browser, start Expo with `npx expo start` and scan its QR code with the Camera app. Keep the phone and Mac on the same Wi-Fi network. The mobile app derives the API host from the Expo development connection. For native simulator/device builds, use `npx expo run:ios` or `npx expo run:android`. The native runtime requires iOS 17 or later or Android 13 or later.
 
-```bash
-npx expo run:ios
-# or
-npx expo run:android
-```
-
-The native runtime requires iOS 17 or later or Android 13 or later. The app is configured for the React Native New Architecture and includes the required Worklets Babel plugin. The first model load may take a while; later launches use the cached model. On-device model output may vary by device and should be reviewed before saving.
+The app is configured for the React Native New Architecture and includes the required Worklets Babel plugin. Ollama hosts and caches the model on the server, so phones and browsers do not need to download or run it. Model output may vary and should be reviewed before saving.

@@ -1,11 +1,12 @@
 import 'dotenv/config';
 import cors from 'cors';
 import express, { type Request, type Response } from 'express';
-import OpenAI from 'openai';
 
 const app = express();
 const port = Number(process.env.API_PORT ?? 3001);
-const openAIModel = process.env.OPENAI_MODEL ?? 'gpt-4o-mini';
+const ollamaHost = process.env.OLLAMA_HOST?.replace(/\/$/, '') ?? 'http://127.0.0.1:11434';
+const ollamaModel = process.env.OLLAMA_MODEL ?? 'llama3.2:1b';
+const ollamaTimeoutMs = Number(process.env.OLLAMA_TIMEOUT_MS ?? 120_000);
 const allowedOrigins = process.env.ALLOWED_WEB_ORIGIN
   ?.split(',')
   .map((origin) => origin.trim())
@@ -25,6 +26,7 @@ app.get('/api/health', (_request: Request, response: Response) => {
 });
 
 app.post('/api/tasks/breakdown', async (request: Request, response: Response) => {
+  console.log("/api/tasks/breakdown")
   const text = typeof request.body?.text === 'string' ? request.body.text.trim() : '';
   if (!text) {
     response.status(400).json({ error: 'Write down a few things on your mind first.' });
@@ -34,38 +36,49 @@ app.post('/api/tasks/breakdown', async (request: Request, response: Response) =>
     response.status(400).json({ error: 'Keep your brain dump under 4,000 characters.' });
     return;
   }
-  if (!process.env.OPENAI_API_KEY) {
-    response.status(503).json({
-      error: 'The task breakdown service is not configured. Add OPENAI_API_KEY to the backend environment.',
-    });
-    return;
-  }
-
   try {
-    const client = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
-    const completion = await client.chat.completions.create({
-      model: openAIModel,
-      temperature: 0.2,
-      max_tokens: 600,
-      response_format: { type: 'json_object' },
-      messages: [
-        {
-          role: 'system',
-          content:
-            'Turn messy notes into a useful task checklist. Use only the supplied notes. ' +
-            'Include every distinct goal, ignore feelings and unrelated details, and turn broad goals ' +
-            'into clear concrete next actions. Use a clear action verb for each task. Keep simple goals ' +
-            'as one task and split larger goals into a few steps. Do not repeat the notes as-is or invent details. ' +
-            'Return valid JSON with exactly this shape: {"tasks":["First task","Second task"]}. ' +
-            'Return no markdown or other text.',
-        },
-        { role: 'user', content: text },
-      ],
-    });
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), ollamaTimeoutMs);
+    let ollamaResponse: globalThis.Response;
 
-    const content = completion.choices[0]?.message?.content;
-    if (!content) {
-      throw new Error('The AI service did not return a task list.');
+    try {
+      ollamaResponse = await fetch(`${ollamaHost}/api/chat`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        signal: controller.signal,
+        body: JSON.stringify({
+          model: ollamaModel,
+          stream: false,
+          format: 'json',
+          options: { temperature: 0.2, num_predict: 600 },
+          messages: [
+            {
+              role: 'system',
+              content:
+                'Turn messy notes into a useful task checklist. Use only the supplied notes. ' +
+                'Include every distinct goal, ignore feelings and unrelated details, and turn broad goals ' +
+                'into clear concrete next actions. Use a clear action verb for each task. Keep simple goals ' +
+                'as one task and split larger goals into a few steps. Do not repeat the notes as-is or invent details. ' +
+                'Return valid JSON with exactly this shape: {"tasks":["First task","Second task"]}. ' +
+                'Return no markdown or other text.',
+            },
+            { role: 'user', content: text },
+          ],
+        }),
+      });
+    } finally {
+      clearTimeout(timeout);
+    }
+
+    if (!ollamaResponse.ok) {
+      const detail = await ollamaResponse.text();
+      throw new Error(`Ollama returned ${ollamaResponse.status}: ${detail}`);
+    }
+
+    const completion = await ollamaResponse.json() as { message?: { content?: unknown } };
+    const content = completion.message?.content;
+    if (typeof content !== 'string' || content.length === 0) {
+      throw new Error('Ollama did not return a task list.');
     }
 
     const parsed = JSON.parse(content) as { tasks?: unknown };

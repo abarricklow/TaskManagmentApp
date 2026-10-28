@@ -9,13 +9,9 @@ import {
   TextInput,
   View,
 } from 'react-native';
+import Constants from 'expo-constants';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { useSQLiteContext } from 'expo-sqlite';
-import {
-  models,
-  setTelemetryEnabled,
-  useLLMChatSession,
-} from 'react-native-executorch';
 import { Colors, FontSizes, Spacing } from '../app/styles/theme';
 
 type SuggestedTask = {
@@ -29,19 +25,21 @@ type Category = {
   name: string;
 };
 
-const SYSTEM_PROMPT =
-  'You turn messy notes into a useful task checklist. Use only the latest notes in the user message. ' +
-  'Include every distinct goal, but ignore feelings and unrelated details. ' +
-  'Turn broad goals into small, concrete next actions, in the order they should be done. ' +
-  'Start each task with a clear action verb. Keep simple goals to one task; split larger goals into a few steps. ' +
-  'Do not repeat the notes as-is, invent personal details, or include example tasks. ' +
-  'Return only numbered tasks, one per line, with no heading or explanation. ' +
-  'Example notes: prepare for an exam and clean the kitchen. ' +
-  'Example checklist: 1. List the exam topics and gather study materials. ' +
-  '2. Study each topic and mark anything that needs more review. ' +
-  '3. Put away items on the kitchen counters. 4. Wipe the counters and clean the sink.';
-
-setTelemetryEnabled(false);
+const expoHostUri =
+  Constants.expoConfig?.hostUri ??
+  Constants.experienceUrl?.replace(/^exp:\/\//, '') ??
+  Constants.linkingUri?.replace(/^exp:\/\//, '');
+const devHost = expoHostUri?.split('/')[0]?.split(':')[0];
+const configuredApiUrl = process.env.EXPO_PUBLIC_API_URL?.replace(/\/$/, '');
+const isLoopbackApiUrl = /^https?:\/\/(localhost|127\.0\.0\.1|\[::1\])/i.test(
+  configuredApiUrl ?? ''
+);
+const apiUrl =
+  (configuredApiUrl && !isLoopbackApiUrl
+    ? configuredApiUrl
+    : devHost
+      ? `http://${devHost}:3001`
+      : 'http://localhost:3001');
 
 export default function BrainDump({
   onSaveTasks,
@@ -53,10 +51,6 @@ export default function BrainDump({
   onWorkingChange: (isWorking: boolean) => void;
 }) {
   const db = useSQLiteContext();
-  const session = useLLMChatSession(models.llm.SMOLLM2_360M.DEFAULT, {
-    initialMessages: [{ role: 'system', content: SYSTEM_PROMPT }],
-    generationConfig: { maxNewTokens: 384, temperature: 0.2 },
-  });
   const [brainDump, setBrainDump] = useState('');
   const [suggestedTasks, setSuggestedTasks] = useState<SuggestedTask[]>([]);
   const [selectedTasks, setSelectedTasks] = useState<Set<number>>(new Set());
@@ -112,52 +106,40 @@ export default function BrainDump({
       setError('Keep your brain dump under 4,000 characters.');
       return;
     }
-    if (!session.isReady || !session.sendMessage) {
-      setError('The on-device model is still loading.');
-      return;
-    }
-
     setIsGenerating(true);
     onWorkingChange(true);
     setError(null);
     setSuggestedTasks([]);
     setSelectedTasks(new Set());
     try {
-      const turn = await session.sendMessage(`Use only these notes:\n${text}`);
-      const response = [...turn.messages]
-        .reverse()
-        .find((message) => message.role === 'assistant')?.content;
-      if (typeof response !== 'string') {
-        throw new Error('The model did not return a task list. Please try again.');
+      const response = await fetch(`${apiUrl}/api/tasks/breakdown`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ text }),
+      });
+      const body = (await response.json()) as { tasks?: unknown; error?: unknown };
+      if (!response.ok) {
+        throw new Error(
+          typeof body.error === 'string'
+            ? body.error
+            : 'Unable to reach the task breakdown service.'
+        );
       }
-
-      const tasks = response
-        .split(/\r?\n/)
-        .map((line) =>
-          line
-            .trim()
-            .replace(/^(?:[-*•]+\s*|\d+[.)]\s*)/, '')
-            .replace(/^\*+|\*+$/g, '')
-            .trim()
-        )
-        .filter(
-          (line) =>
-            /[a-z0-9]/i.test(line) &&
-            !/(?:end|start)\s+of\s+text/i.test(line)
-        )
-        .slice(0, 20);
+      const tasks = Array.isArray(body.tasks)
+        ? body.tasks.filter((task): task is string => typeof task === 'string')
+        : [];
       if (tasks.length === 0) {
-        throw new Error('The model returned an unusable response. Please try again.');
+        throw new Error('The task breakdown service returned an unusable response.');
       }
 
       setSuggestedTasks(tasks.map((name) => ({ name, categoryId: null, dueDate: null })));
       setSelectedTasks(new Set(tasks.map((_, index) => index)));
     } catch (generationError) {
-      console.error('Unable to process brain dump on device:', generationError);
+      console.error('Unable to process brain dump:', generationError);
       setError(
         generationError instanceof Error
-          ? generationError.message
-          : 'Unable to break down the brain dump. Please try again.'
+          ? `${generationError.message} (${apiUrl})`
+          : `Unable to break down the brain dump. Please try again. (${apiUrl})`
       );
     } finally {
       setIsGenerating(false);
@@ -181,7 +163,7 @@ export default function BrainDump({
       setSuggestedTasks([]);
       setSelectedTasks(new Set());
     } catch (saveError) {
-      console.error('Unable to save on-device suggestions:', saveError);
+      console.error('Unable to save suggested tasks:', saveError);
       setError(
         saveError instanceof Error
           ? saveError.message
@@ -297,7 +279,7 @@ export default function BrainDump({
     <View style={styles.card}>
       <Text style={styles.sectionTitle}>What&apos;s on your mind?</Text>
       <Text style={styles.description}>
-        Your words are processed on this device and aren&apos;t sent to an AI server.
+        Your words are sent only to this app&apos;s secure task breakdown API.
       </Text>
       <TextInput
         accessibilityLabel="Brain dump"
@@ -317,28 +299,12 @@ export default function BrainDump({
         value={brainDump}
       />
 
-      {!session.isReady ? (
-        <View style={styles.modelStatus}>
-          <ActivityIndicator color={Colors.primary} />
-          <Text style={styles.description}>
-            {session.error
-              ? 'The on-device model could not be loaded.'
-              : `Preparing on-device AI (${Math.round(session.downloadProgress)}%)`}
-          </Text>
-        </View>
-      ) : (
-        <ActionButton
-          disabled={isWorking}
-          label={isGenerating ? 'Breaking it down...' : 'Break into subtasks'}
-          onPress={breakDownBrainDump}
-        />
-      )}
+      <ActionButton
+        disabled={isWorking}
+        label={isGenerating ? 'Breaking it down...' : 'Break into subtasks'}
+        onPress={breakDownBrainDump}
+      />
 
-      {session.error && (
-        <Text style={styles.error}>
-          {session.error.message} Make sure you have enough free storage and a supported device.
-        </Text>
-      )}
       {isGenerating && <ActivityIndicator color={Colors.primary} />}
       {error && <Text accessibilityRole="alert" style={styles.error}>{error}</Text>}
 
