@@ -58,7 +58,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="wellness"
         options={{
-          title: 'Wellness',
+          title: 'Mental Wellness Hub',
           tabBarIcon: ({ color, focused }) => (
             <MaterialCommunityIcons name="brain" size={IconSizes.medium} color={color}/>
           ),

@@ -5,7 +5,6 @@ import { Colors, FontSizes, GlobalStyles, Spacing } from '../styles/theme';
 export default function WellnessScreen() {
   return (
     <View style={styles.content}>
-      <Text style={GlobalStyles.heading}>Mental Wellness Hub</Text>
       <View style={styles.options}>
         {['White Noise', 'Journaling', 'Meditation', 'Gratitude'].map((option) => {
           const Option = option === 'Gratitude' ? Pressable : View;
