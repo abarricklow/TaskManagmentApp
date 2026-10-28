@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { ScrollView, StyleSheet, Text } from 'react-native';
-import { router } from 'expo-router';
+import { router, Stack } from 'expo-router';
 import { useSQLiteContext } from 'expo-sqlite';
 import { Colors, FontSizes, Spacing } from './styles/theme';
 import BrainDump from '../components/BrainDump';
@@ -37,6 +37,7 @@ export default function BrainDumpScreen() {
 
   return (
     <ScrollView contentContainerStyle={styles.content}>
+      <Stack.Screen options={{ headerBackTitle: 'Add' }} />
       <Text style={styles.heading}>Break into subtasks</Text>
       <BrainDump
         onSaveTasks={saveBrainDumpTasks}

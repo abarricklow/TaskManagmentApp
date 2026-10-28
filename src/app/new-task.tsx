@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react';
+import { createElement, useCallback, useState } from 'react';
 import {
   Modal,
   Platform,
@@ -10,8 +10,9 @@ import {
   View,
 } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
-import { router, useFocusEffect } from 'expo-router';
+import { router, Stack, useFocusEffect, useLocalSearchParams } from 'expo-router';
 import { useSQLiteContext } from 'expo-sqlite';
+import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import { Colors, FontSizes, Spacing } from './styles/theme';
 
 type Category = {
@@ -21,9 +22,15 @@ type Category = {
 
 export default function NewTaskScreen() {
   const db = useSQLiteContext();
+  // Set when opened from a category page, so that category is pre-selected
+  const { categoryId, categoryName } = useLocalSearchParams<{
+    categoryId?: string;
+    categoryName?: string;
+  }>();
+  const presetCategoryId = categoryId ? Number(categoryId) : null;
   const [taskName, setTaskName] = useState('');
   const [categories, setCategories] = useState<Category[]>([]);
-  const [selectedCategoryId, setSelectedCategoryId] = useState<number | null>(null);
+  const [selectedCategoryId, setSelectedCategoryId] = useState<number | null>(presetCategoryId);
   const [isCategoryDropdownOpen, setIsCategoryDropdownOpen] = useState(false);
   const [newCategoryName, setNewCategoryName] = useState('');
   const [isCategoryModalVisible, setIsCategoryModalVisible] = useState(false);
@@ -32,6 +39,7 @@ export default function NewTaskScreen() {
   const [dueDate, setDueDate] = useState<Date | null>(null);
   const [draftDueDate, setDraftDueDate] = useState(new Date());
   const [showDatePicker, setShowDatePicker] = useState(false);
+  const [isPriority, setIsPriority] = useState(false);
   const [isWorking, setIsWorking] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -41,7 +49,11 @@ export default function NewTaskScreen() {
         'SELECT id, name FROM Category ORDER BY id'
       );
       setCategories(savedCategories);
-      setSelectedCategoryId((current) => current ?? savedCategories[0]?.id ?? null);
+      setSelectedCategoryId((current) =>
+        current !== null && savedCategories.some((category) => category.id === current)
+          ? current
+          : savedCategories[0]?.id ?? null
+      );
     } catch (loadError) {
       console.error('Unable to load task categories:', loadError);
       setError('Task categories could not be loaded. Please try again.');
@@ -73,12 +85,18 @@ export default function NewTaskScreen() {
     setError(null);
     try {
       await db.runAsync(
-        'INSERT INTO Tasks (name, category_id, due_date) VALUES (?, ?, ?)',
+        'INSERT INTO Tasks (name, category_id, due_date, priority) VALUES (?, ?, ?, ?)',
         name,
         selectedCategoryId,
-        formatDateForDatabase(dueDate)
+        formatDateForDatabase(dueDate),
+        isPriority ? 1 : 0
       );
-      router.replace('/(tabs)');
+      if (presetCategoryId !== null && router.canGoBack()) {
+        // Came from a category page: go back there so the new task shows up
+        router.back();
+      } else {
+        router.replace('/(tabs)');
+      }
     } catch (saveError) {
       console.error('Unable to save task:', saveError);
       setError('The task could not be saved. Please try again.');
@@ -134,6 +152,12 @@ export default function NewTaskScreen() {
 
   return (
     <ScrollView contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled">
+      {/* Back button names the page you came from: a category, or the Add tab */}
+      <Stack.Screen
+        options={{
+          headerBackTitle: presetCategoryId !== null ? categoryName ?? 'Back' : 'Add',
+        }}
+      />
       <View style={styles.card}>
         <Text style={styles.heading}>New task</Text>
 
@@ -196,18 +220,23 @@ export default function NewTaskScreen() {
         />
 
         <Text style={styles.fieldLabel}>Due date (required)</Text>
-        <Pressable
-          accessibilityRole="button"
-          onPress={() => {
-            setDraftDueDate(dueDate ?? new Date());
-            setShowDatePicker(true);
-          }}
-          style={({ pressed }) => [styles.dateButton, pressed && styles.pressed]}
-        >
-          <Text style={styles.valueLabel}>
-            {dueDate ? dueDate.toLocaleDateString() : 'Choose a due date'}
-          </Text>
-        </Pressable>
+        {Platform.OS === 'web' ? (
+          // The native date picker doesn't exist on web, so use the browser's own
+          <WebDateInput disabled={isWorking} onChange={setDueDate} value={dueDate} />
+        ) : (
+          <Pressable
+            accessibilityRole="button"
+            onPress={() => {
+              setDraftDueDate(dueDate ?? new Date());
+              setShowDatePicker(true);
+            }}
+            style={({ pressed }) => [styles.dateButton, pressed && styles.pressed]}
+          >
+            <Text style={styles.valueLabel}>
+              {dueDate ? dueDate.toLocaleDateString() : 'Choose a due date'}
+            </Text>
+          </Pressable>
+        )}
         {showDatePicker && Platform.OS === 'android' && (
           <DateTimePicker
             accentColor={Colors.primary}
@@ -221,6 +250,30 @@ export default function NewTaskScreen() {
             value={draftDueDate}
           />
         )}
+
+        <View style={styles.priorityRow}>
+          <Pressable
+            accessibilityLabel="Priority task"
+            accessibilityRole="togglebutton"
+            accessibilityState={{ checked: isPriority, disabled: isWorking }}
+            disabled={isWorking}
+            hitSlop={Spacing.sm}
+            onPress={() => setIsPriority((current) => !current)}
+            style={({ pressed }) => pressed && styles.pressed}
+          >
+            <MaterialCommunityIcons
+              color={isPriority ? Colors.primary : Colors.textSecondary}
+              name={isPriority ? 'star' : 'star-outline'}
+              size={36}
+            />
+          </Pressable>
+          <View style={styles.priorityText}>
+            <Text style={styles.fieldLabel}>
+              {isPriority ? 'Priority task' : 'Mark as priority'}
+            </Text>
+            <Text style={styles.priorityHint}>Priority tasks show on the Home page</Text>
+          </View>
+        </View>
 
         {error && <Text accessibilityRole="alert" style={styles.error}>{error}</Text>}
         <ActionButton
@@ -287,9 +340,10 @@ export default function NewTaskScreen() {
             <Text style={styles.heading}>Choose due date</Text>
             <DateTimePicker
               accentColor={Colors.primary}
-              display="spinner"
+              display="inline"
               mode="date"
               onValueChange={(_event, date) => setDraftDueDate(date)}
+              themeVariant="light"
               value={draftDueDate}
             />
             <View style={styles.modalActions}>
@@ -337,6 +391,43 @@ function ActionButton({
   );
 }
 
+// Browser date input, used only on web
+function WebDateInput({
+  disabled,
+  onChange,
+  value,
+}: {
+  disabled: boolean;
+  onChange: (date: Date | null) => void;
+  value: Date | null;
+}) {
+  return createElement('input', {
+    'aria-label': 'Due date',
+    disabled,
+    type: 'date',
+    value: value ? formatDateForDatabase(value) : '',
+    onChange: (event: { target: { value: string } }) => {
+      const text = event.target.value; // "YYYY-MM-DD" or ""
+      if (!text) {
+        onChange(null);
+        return;
+      }
+      const [year, month, day] = text.split('-').map(Number);
+      onChange(new Date(year, month - 1, day));
+    },
+    style: {
+      alignSelf: 'flex-start',
+      backgroundColor: '#F4F7F2',
+      border: `1px solid ${Colors.border}`,
+      borderRadius: 8,
+      color: Colors.text,
+      fontFamily: 'inherit',
+      fontSize: FontSizes.body,
+      padding: `${Spacing.sm}px ${Spacing.md}px`,
+    },
+  });
+}
+
 function formatDateForDatabase(date: Date) {
   const year = date.getFullYear();
   const month = String(date.getMonth() + 1).padStart(2, '0');
@@ -345,6 +436,19 @@ function formatDateForDatabase(date: Date) {
 }
 
 const styles = StyleSheet.create({
+  priorityRow: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    gap: Spacing.sm,
+  },
+  priorityText: {
+    flex: 1,
+    gap: Spacing.xs,
+  },
+  priorityHint: {
+    color: Colors.textSecondary,
+    fontSize: FontSizes.small,
+  },
   content: {
     flexGrow: 1,
     backgroundColor: Colors.background,

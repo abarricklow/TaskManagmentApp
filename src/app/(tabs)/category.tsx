@@ -3,6 +3,7 @@ import { ActivityIndicator, Modal, Pressable, RefreshControl, ScrollView, StyleS
 import { router, useFocusEffect, useNavigation } from 'expo-router';
 import { useSQLiteContext } from 'expo-sqlite';
 import AntDesign from '@expo/vector-icons/AntDesign';
+import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import { BorderWidths, Colors, FontSizes, FontWeights, GlobalStyles, IconSizes, Opacity, Radius, Spacing,} from '../styles/theme';
 
 type CategorySummary = {
@@ -10,6 +11,16 @@ type CategorySummary = {
   name: string;
   taskCount: number;
 };
+
+type TaskPreview = {
+  id: number;
+  name: string;
+  categoryId: number;
+  priority: number;
+};
+
+// How many task names to show on each category card
+const PREVIEW_LIMIT = 3;
 
 // Number of cards per row
 function getColumnCount(screenWidth: number) {
@@ -23,6 +34,7 @@ export default function CategoryScreen() {
   const navigation = useNavigation();
   const { width } = useWindowDimensions();
   const [categories, setCategories] = useState<CategorySummary[]>([]);
+  const [previews, setPreviews] = useState<Record<number, TaskPreview[]>>({});
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -71,7 +83,19 @@ export default function CategoryScreen() {
         GROUP BY Category.id
         ORDER BY Category.id`
       );
+      // One query for all open tasks, then group them by category
+      const tasks = await db.getAllAsync<TaskPreview>(
+        `SELECT id, name, category_id AS categoryId, priority
+        FROM Tasks
+        WHERE completed = 0 AND category_id IS NOT NULL
+        ORDER BY priority DESC, due_date IS NULL, due_date, id`
+      );
+      const grouped: Record<number, TaskPreview[]> = {};
+      for (const task of tasks) {
+        (grouped[task.categoryId] ??= []).push(task);
+      }
       setCategories(rows);
+      setPreviews(grouped);
     } catch (loadError) {
       console.error('Unable to load categories:', loadError);
       setError('Your categories could not be loaded. Pull down to try again.');
@@ -171,12 +195,15 @@ export default function CategoryScreen() {
                   pressed && styles.pressed,
                 ]}
               >
-                <Text numberOfLines={2} style={styles.cardTitle}>
-                  {category.name}
-                </Text>
-                <Text style={styles.cardDescription}>
-                  {formatCount(category.taskCount)}
-                </Text>
+                <View style={styles.cardHeader}>
+                  <Text numberOfLines={2} style={styles.cardTitle}>
+                    {category.name}
+                  </Text>
+                  <Text style={styles.cardDescription}>
+                    {formatCount(category.taskCount)}
+                  </Text>
+                </View>
+                <TaskPreviewList tasks={previews[category.id] ?? []} />
               </Pressable>
             ))}
           </View>
@@ -243,6 +270,39 @@ export default function CategoryScreen() {
   );
 }
 
+function TaskPreviewList({ tasks }: { tasks: TaskPreview[] }) {
+  if (tasks.length === 0) {
+    return <Text style={styles.previewMore}>No open tasks</Text>;
+  }
+  const shown = tasks.slice(0, PREVIEW_LIMIT);
+  const hiddenCount = tasks.length - shown.length;
+
+  return (
+    <View style={styles.previewList}>
+      {shown.map((task) => (
+        <View key={task.id} style={styles.previewRow}>
+          {task.priority ? (
+            <MaterialCommunityIcons
+              accessibilityLabel="Priority"
+              name="star"
+              size={IconSizes.small}
+              color={Colors.primary}
+            />
+          ) : (
+            <Text style={styles.previewBullet}>•</Text>
+          )}
+          <Text numberOfLines={1} style={styles.previewText}>
+            {task.name}
+          </Text>
+        </View>
+      ))}
+      {hiddenCount > 0 && (
+        <Text style={styles.previewMore}>+{hiddenCount} more</Text>
+      )}
+    </View>
+  );
+}
+
 function formatCount(count: number) {
   return count === 1 ? '1 task' : `${count} tasks`;
 }
@@ -281,8 +341,38 @@ const styles = StyleSheet.create({
     padding: Spacing.md,
   },
   gridCard: {
-    aspectRatio: 4 / 3,
-    justifyContent: 'space-between',
+    gap: Spacing.sm,
+    minHeight: 140,
+  },
+  cardHeader: {
+    gap: Spacing.xs,
+  },
+  previewList: {
+    borderTopColor: Colors.border,
+    borderTopWidth: BorderWidths.hairline,
+    gap: Spacing.xs,
+    paddingTop: Spacing.sm,
+  },
+  previewRow: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    gap: Spacing.xs,
+  },
+  previewBullet: {
+    color: Colors.textSecondary,
+    fontSize: FontSizes.small,
+    textAlign: 'center',
+    width: IconSizes.small,
+  },
+  previewText: {
+    color: Colors.text,
+    flex: 1,
+    fontSize: FontSizes.small,
+  },
+  previewMore: {
+    color: Colors.textSecondary,
+    fontSize: FontSizes.small,
+    fontStyle: 'italic',
   },
   pressed: {
     opacity: Opacity.pressed,

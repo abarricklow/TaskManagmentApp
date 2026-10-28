@@ -1,14 +1,16 @@
 import { useCallback, useState } from 'react';
 import { ActivityIndicator, Pressable, RefreshControl, ScrollView, StyleSheet, Text, View,} from 'react-native';
-import { Stack, useFocusEffect, useLocalSearchParams } from 'expo-router';
+import { router, Stack, useFocusEffect, useLocalSearchParams } from 'expo-router';
 import { useSQLiteContext } from 'expo-sqlite';
-import { BorderWidths, Colors, FontSizes, FontWeights, Radius, Spacing, } from '../styles/theme';
+import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
+import { BorderWidths, Colors, FontSizes, FontWeights, IconSizes, Radius, Spacing, } from '../styles/theme';
 
 type Task = {
   id: number;
   name: string;  
   categoryName: string | null;
   dueDate: string | null;
+  priority: number;
 };
 
 export default function CategoryDetailScreen() {
@@ -26,10 +28,10 @@ export default function CategoryDetailScreen() {
     setError(null);
     try {
       const rows = await db.getAllAsync<Task>(
-        `SELECT id, name, due_date AS dueDate
+        `SELECT id, name, due_date AS dueDate, priority
         FROM Tasks
         WHERE category_id = ? AND completed = 0
-        ORDER BY due_date IS NULL, due_date, id`,
+        ORDER BY priority DESC, due_date IS NULL, due_date, id`,
         Number(id)
       );
       setTasks(rows);
@@ -55,6 +57,32 @@ export default function CategoryDetailScreen() {
     }
   }
 
+  async function togglePriority(task: Task) {
+    const nextPriority = task.priority ? 0 : 1;
+    // Update the screen right away, then save
+    setTasks((current) =>
+      current.map((item) =>
+        item.id === task.id ? { ...item, priority: nextPriority } : item
+      )
+    );
+    setError(null);
+    try {
+      await db.runAsync(
+        'UPDATE Tasks SET priority = ? WHERE id = ?',
+        nextPriority,
+        task.id
+      );
+    } catch (priorityError) {
+      console.error('Unable to update task priority:', priorityError);
+      setError('The priority could not be changed. Please try again.');
+      setTasks((current) =>
+        current.map((item) =>
+          item.id === task.id ? { ...item, priority: task.priority } : item
+        )
+      );
+    }
+  }
+
   useFocusEffect(
     useCallback(() => {
       void loadTasks();
@@ -66,7 +94,25 @@ export default function CategoryDetailScreen() {
       <Stack.Screen
         options={{
           title: categoryName,
+          headerBackTitle: 'Categories',
           headerStyle: { backgroundColor: Colors.background },
+          headerRight: () => (
+            <Pressable
+              accessibilityLabel={`Add a task to ${categoryName}`}
+              accessibilityRole="button"
+              hitSlop={Spacing.sm}
+              onPress={() =>
+                router.push({ pathname: '/new-task', params: { categoryId: id, categoryName } })
+              }
+              style={({ pressed }) => [styles.headerButton, pressed && styles.headerButtonPressed]}
+            >
+              <MaterialCommunityIcons
+                color={Colors.primary}
+                name="plus"
+                size={IconSizes.medium}
+              />
+            </Pressable>
+          ),
         }}
       />
       <ScrollView
@@ -78,6 +124,7 @@ export default function CategoryDetailScreen() {
         <Text style={styles.heading}>{categoryName}</Text>
         <Text style={styles.description}>
           {tasks.length === 1 ? '1 open task' : `${tasks.length} open tasks`}
+          {' · Tap ☆ to show a task on Home'}
         </Text>
 
         {isLoading && tasks.length === 0 ? (
@@ -122,6 +169,24 @@ export default function CategoryDetailScreen() {
                   </Text>
                 )}
               </View>
+              <Pressable
+                accessibilityLabel={
+                  task.priority
+                    ? `Remove ${task.name} from priority tasks`
+                    : `Mark ${task.name} as a priority task`
+                }
+                accessibilityRole="togglebutton"
+                accessibilityState={{ checked: Boolean(task.priority) }}
+                hitSlop={Spacing.sm}
+                onPress={() => void togglePriority(task)}
+                style={({ pressed }) => pressed && styles.checkboxPressed}
+              >
+                <MaterialCommunityIcons
+                  name={task.priority ? 'star' : 'star-outline'}
+                  size={IconSizes.medium}
+                  color={task.priority ? Colors.primary : Colors.textSecondary}
+                />
+              </Pressable>
             </View>
           ))}
         </View>
@@ -137,6 +202,12 @@ function formatDate(value: string) {
 }
 
 const styles = StyleSheet.create({
+  headerButton: {
+    padding: Spacing.xs,
+  },
+  headerButtonPressed: {
+    opacity: 0.7,
+  },
   content: {
     flexGrow: 1,
     backgroundColor: Colors.background,

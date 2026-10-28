@@ -10,7 +10,8 @@ import {
 } from 'react-native';
 import { useFocusEffect } from 'expo-router';
 import { useSQLiteContext } from 'expo-sqlite';
-import { Colors, FontSizes, Spacing } from '../styles/theme';
+import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
+import { Colors, FontSizes, IconSizes, Spacing } from '../styles/theme';
 
 type Task = {
   id: number;
@@ -35,8 +36,8 @@ export default function Index() {
           Tasks.due_date AS dueDate
         FROM Tasks
         LEFT JOIN Category ON Category.id = Tasks.category_id
-        WHERE Tasks.completed = 0
-        ORDER BY Tasks.id DESC`
+        WHERE Tasks.completed = 0 AND Tasks.priority = 1
+        ORDER BY Tasks.due_date IS NULL, Tasks.due_date, Tasks.id DESC`
       );
       setTasks(savedTasks);
     } catch (loadError) {
@@ -58,6 +59,18 @@ export default function Index() {
       setError('The task could not be marked complete. Please try again.');
     } finally {
       setCompletingTaskIds((current) => current.filter((id) => id !== taskId));
+    }
+  }
+
+  // Un-starring a task removes it from the home page (it stays in its category)
+  async function removePriority(taskId: number) {
+    setError(null);
+    try {
+      await db.runAsync('UPDATE Tasks SET priority = 0 WHERE id = ?', taskId);
+      setTasks((current) => current.filter((task) => task.id !== taskId));
+    } catch (priorityError) {
+      console.error('Unable to update task priority:', priorityError);
+      setError('The priority could not be changed. Please try again.');
     }
   }
 
@@ -84,9 +97,9 @@ export default function Index() {
         </Text>
       </View>
 
-      <Text style={styles.heading}>Your to-do list</Text>
+      <Text style={styles.heading}>Priority tasks</Text>
       <Text style={styles.description}>
-        {tasks.length === 1 ? '1 task' : `${tasks.length} tasks`}
+        {tasks.length === 1 ? '1 priority task' : `${tasks.length} priority tasks`}
       </Text>
 
       {isLoading && tasks.length === 0 ? (
@@ -97,9 +110,9 @@ export default function Index() {
         </Text>
       ) : tasks.length === 0 ? (
         <View style={styles.emptyCard}>
-          <Text style={styles.emptyTitle}>No tasks yet</Text>
+          <Text style={styles.emptyTitle}>No priority tasks</Text>
           <Text style={styles.description}>
-            Add a task or break a brain dump into subtasks to see them here.
+            Open a category and tap the ☆ next to a task to show it here.
           </Text>
         </View>
       ) : (
@@ -131,6 +144,19 @@ export default function Index() {
                   </Text>
                 )}
               </View>
+              <Pressable
+                accessibilityLabel={`Remove ${task.name} from priority tasks`}
+                accessibilityRole="button"
+                hitSlop={Spacing.sm}
+                onPress={() => void removePriority(task.id)}
+                style={({ pressed }) => pressed && styles.checkboxDisabled}
+              >
+                <MaterialCommunityIcons
+                  name="star"
+                  size={IconSizes.medium}
+                  color={Colors.primary}
+                />
+              </Pressable>
             </View>
           ))}
         </View>
