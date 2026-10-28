@@ -1,8 +1,9 @@
-import { useCallback, useState } from 'react';
-import { ActivityIndicator, Pressable, RefreshControl, ScrollView, StyleSheet, Text, useWindowDimensions, View,} from 'react-native';
-import { router, useFocusEffect } from 'expo-router';
+import { useCallback, useLayoutEffect, useState } from 'react';
+import { ActivityIndicator, Modal, Pressable, RefreshControl, ScrollView, StyleSheet, Text, TextInput, useWindowDimensions, View,} from 'react-native';
+import { router, useFocusEffect, useNavigation } from 'expo-router';
 import { useSQLiteContext } from 'expo-sqlite';
-import { BorderWidths, Colors, FontSizes, FontWeights, Opacity, Radius, Spacing,} from '../styles/theme';
+import AntDesign from '@expo/vector-icons/AntDesign';
+import { BorderWidths, Colors, FontSizes, FontWeights, GlobalStyles, IconSizes, Opacity, Radius, Spacing,} from '../styles/theme';
 
 type CategorySummary = {
   id: number;
@@ -19,14 +20,44 @@ function getColumnCount(screenWidth: number) {
 
 export default function CategoryScreen() {
   const db = useSQLiteContext();
+  const navigation = useNavigation();
   const { width } = useWindowDimensions();
   const [categories, setCategories] = useState<CategorySummary[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
+  // New category modal state
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [newCategoryName, setNewCategoryName] = useState('');
+  const [isSaving, setIsSaving] = useState(false);
+  const [modalError, setModalError] = useState<string | null>(null);
+
   const columns = getColumnCount(width);
   const availableWidth = width - Spacing.md * 2;
   const cardWidth = (availableWidth - Spacing.md * (columns - 1)) / columns;
+
+  const openModal = useCallback(() => {
+    setNewCategoryName('');
+    setModalError(null);
+    setIsModalVisible(true);
+  }, []);
+
+  // Put a "+" button in the top header bar, next to the "Category" title
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      headerRight: () => (
+        <Pressable
+          accessibilityLabel="Create new category"
+          accessibilityRole="button"
+          hitSlop={Spacing.sm}
+          onPress={openModal}
+          style={({ pressed }) => [styles.headerButton, pressed && styles.pressed]}
+        >
+          <AntDesign name="plus" size={IconSizes.medium} color={Colors.primary} />
+        </Pressable>
+      ),
+    });
+  }, [navigation, openModal]);
 
   const loadCategories = useCallback(async () => {
     setIsLoading(true);
@@ -55,66 +86,160 @@ export default function CategoryScreen() {
     }, [loadCategories])
   );
 
-  return (
-    <ScrollView
-      contentContainerStyle={styles.content}
-      refreshControl={
-        <RefreshControl refreshing={isLoading} onRefresh={loadCategories} />
-      }
-    >
-      <Text style={styles.heading}>Categories</Text>
-      <Text style={styles.description}>
-        Choose a category to see its tasks.
-      </Text>
+  async function addCategory() {
+    const name = newCategoryName.trim();
+    if (!name) {
+      setModalError('Enter a category name first.');
+      return;
+    }
 
-      {isLoading && categories.length === 0 ? (
-        <ActivityIndicator color={Colors.primary} />
-      ) : error ? (
-        <Text accessibilityRole="alert" style={styles.error}>
-          {error}
+    setIsSaving(true);
+    setModalError(null);
+    try {
+      const result = await db.runAsync(
+        'INSERT OR IGNORE INTO Category (name) VALUES (?)',
+        name
+      );
+      if (result.changes === 0) {
+        setModalError('A category with that name already exists.');
+        return;
+      }
+      setIsModalVisible(false);
+      setNewCategoryName('');
+      await loadCategories();
+    } catch (saveError) {
+      console.error('Unable to save category:', saveError);
+      setModalError('The category could not be saved. Please try again.');
+    } finally {
+      setIsSaving(false);
+    }
+  }
+
+  function closeModal() {
+    if (isSaving) return;
+    setIsModalVisible(false);
+    setNewCategoryName('');
+    setModalError(null);
+  }
+
+  return (
+    <>
+      <ScrollView
+        contentContainerStyle={styles.content}
+        refreshControl={
+          <RefreshControl refreshing={isLoading} onRefresh={loadCategories} />
+        }
+      >
+        <Text style={styles.description}>
+          Choose a category to see its tasks.
         </Text>
-      ) : categories.length === 0 ? (
-        <Pressable
-          accessibilityRole="button"
-          onPress={() => router.push('/new-task')}
-          style={({ pressed }) => [styles.card, pressed && styles.pressed]}
-        >
-          <Text style={styles.cardTitle}>No categories yet</Text>
-          <Text style={styles.cardDescription}>
-            Create a task to add your first category
+
+        {isLoading && categories.length === 0 ? (
+          <ActivityIndicator color={Colors.primary} />
+        ) : error ? (
+          <Text accessibilityRole="alert" style={styles.error}>
+            {error}
           </Text>
-        </Pressable>
-      ) : (
-        <View style={styles.grid}>
-          {categories.map((category) => (
-            <Pressable
-              accessibilityLabel={`${category.name}, ${formatCount(category.taskCount)}`}
-              accessibilityRole="button"
-              key={category.id}
-              onPress={() =>
-                router.push({
-                  pathname: '/category/[id]',
-                  params: { id: String(category.id), name: category.name },
-                })
-              }
-              style={({ pressed }) => [
-                styles.card,
-                styles.gridCard,
-                { width: cardWidth },
-                pressed && styles.pressed,
-              ]}
-            >
-              <Text numberOfLines={2} style={styles.cardTitle}>
-                {category.name}
+        ) : categories.length === 0 ? (
+          <Pressable
+            accessibilityRole="button"
+            onPress={openModal}
+            style={({ pressed }) => [styles.card, pressed && styles.pressed]}
+          >
+            <Text style={styles.cardTitle}>No categories yet</Text>
+            <Text style={styles.cardDescription}>
+              Tap here or the + button to add your first category
+            </Text>
+          </Pressable>
+        ) : (
+          <View style={styles.grid}>
+            {categories.map((category) => (
+              <Pressable
+                accessibilityLabel={`${category.name}, ${formatCount(category.taskCount)}`}
+                accessibilityRole="button"
+                key={category.id}
+                onPress={() =>
+                  router.push({
+                    pathname: '/category/[id]',
+                    params: { id: String(category.id), name: category.name },
+                  })
+                }
+                style={({ pressed }) => [
+                  styles.card,
+                  styles.gridCard,
+                  { width: cardWidth },
+                  pressed && styles.pressed,
+                ]}
+              >
+                <Text numberOfLines={2} style={styles.cardTitle}>
+                  {category.name}
+                </Text>
+                <Text style={styles.cardDescription}>
+                  {formatCount(category.taskCount)}
+                </Text>
+              </Pressable>
+            ))}
+          </View>
+        )}
+      </ScrollView>
+
+      <Modal
+        animationType="fade"
+        onRequestClose={closeModal}
+        transparent
+        visible={isModalVisible}
+      >
+        <View style={GlobalStyles.modalBackdrop}>
+          <View style={GlobalStyles.modalCard}>
+            <Text style={styles.heading}>New category</Text>
+            <TextInput
+              accessibilityLabel="New category name"
+              autoFocus
+              editable={!isSaving}
+              onChangeText={setNewCategoryName}
+              onSubmitEditing={addCategory}
+              placeholder="Category name"
+              placeholderTextColor={Colors.textSecondary}
+              returnKeyType="done"
+              style={GlobalStyles.input}
+              value={newCategoryName}
+            />
+            {modalError && (
+              <Text accessibilityRole="alert" style={styles.error}>
+                {modalError}
               </Text>
-              <Text style={styles.cardDescription}>
-                {formatCount(category.taskCount)}
-              </Text>
-            </Pressable>
-          ))}
+            )}
+            <View style={GlobalStyles.modalActions}>
+              <Pressable
+                accessibilityRole="button"
+                disabled={isSaving}
+                onPress={closeModal}
+                style={({ pressed }) => [
+                  GlobalStyles.cancelButton,
+                  (pressed || isSaving) && styles.pressed,
+                ]}
+              >
+                <Text style={GlobalStyles.cancelLabel}>Cancel</Text>
+              </Pressable>
+              <Pressable
+                accessibilityRole="button"
+                disabled={isSaving}
+                onPress={addCategory}
+                style={({ pressed }) => [
+                  GlobalStyles.submitButton,
+                  styles.addButton,
+                  (pressed || isSaving) && styles.pressed,
+                ]}
+              >
+                <Text style={GlobalStyles.submitLabel}>
+                  {isSaving ? 'Adding...' : 'Add'}
+                </Text>
+              </Pressable>
+            </View>
+          </View>
         </View>
-      )}
-    </ScrollView>
+      </Modal>
+    </>
   );
 }
 
@@ -128,6 +253,10 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.background,
     gap: Spacing.md,
     padding: Spacing.md,
+  },
+  headerButton: {
+    marginRight: Spacing.md,
+    padding: Spacing.xs,
   },
   heading: {
     color: Colors.text,
@@ -170,5 +299,9 @@ const styles = StyleSheet.create({
   error: {
     color: Colors.error,
     fontSize: FontSizes.body,
+  },
+  addButton: {
+    paddingHorizontal: Spacing.lg,
+    paddingVertical: Spacing.sm,
   },
 });
