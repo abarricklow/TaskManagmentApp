@@ -1,5 +1,5 @@
 import { Tabs } from 'expo-router';
-import { Colors, IconSizes, GlobalStyles } from '../styles/theme';
+import { Colors, IconSizes } from '../styles/theme';
 import AntDesign from '@expo/vector-icons/AntDesign';
 import Entypo from '@expo/vector-icons/Entypo';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
@@ -23,8 +23,8 @@ export default function TabLayout() {
         name="index"
         options={{
           title: 'Home',
-          tabBarIcon: ({ color, focused }) => (
-            <Entypo name="home" size={IconSizes.medium} color={color}/>
+          tabBarIcon: () => (
+            <Entypo name="home" size={IconSizes.medium} color={Colors.accent}/>
           ),
         }}
       />
@@ -32,8 +32,8 @@ export default function TabLayout() {
         name="category"
         options={{
           title: 'Category',
-          tabBarIcon: ({ color, focused }) => (
-            <AntDesign name="appstore" size={IconSizes.medium} color={color}/>
+          tabBarIcon: () => (
+            <AntDesign name="appstore" size={IconSizes.medium} color={Colors.accent}/>
           ),
         }}
       />
@@ -41,8 +41,8 @@ export default function TabLayout() {
         name="add"
         options={{
           title: 'Add',
-          tabBarIcon: ({ color, focused }) => (
-            <AntDesign name="plus-circle" size={IconSizes.medium} color={color} />
+          tabBarIcon: () => (
+            <AntDesign name="plus-circle" size={IconSizes.medium} color={Colors.accent} />
           ),
         }}
       />
@@ -50,17 +50,17 @@ export default function TabLayout() {
         name="plants"
         options={{
           title: 'Plants',
-          tabBarIcon: ({ color, focused }) => (
-            <Entypo name="leaf" size={IconSizes.medium} color={color}/>
+          tabBarIcon: () => (
+            <Entypo name="leaf" size={IconSizes.medium} color={Colors.accent}/>
           ),
         }}
       />
       <Tabs.Screen
         name="wellness"
         options={{
-          title: 'Mental Wellness Hub',
-          tabBarIcon: ({ color, focused }) => (
-            <MaterialCommunityIcons name="brain" size={IconSizes.medium} color={color}/>
+          title: 'Wellness',
+          tabBarIcon: () => (
+            <MaterialCommunityIcons name="brain" size={IconSizes.medium} color={Colors.accent}/>
           ),
         }}
       />
