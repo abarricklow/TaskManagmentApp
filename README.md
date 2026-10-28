@@ -23,8 +23,20 @@ You will need npm on your machine. If you have homebrew, you can run
 
 In the output, you'll find options to open the app in on localhost (mine says "http://localhost:8081", but it's possible you may see a different port.)
 
-## Quick add and on-device brain dump
-Quick add saves a task name, optional due date, and selected category to the local SQLite database. Personal, Work, School, and Other categories are available by default; custom categories can also be created. Saved tasks appear on the Home tab. Brain dump uses a quantized language model through React Native ExecuTorch. The brain-dump text is processed on the device and is not sent to an AI server. The model files are downloaded from the model registry on first use and cached on the device; the first setup requires internet access and several hundred megabytes of free storage.
+## Quick add and brain dump
+Quick add saves a task name, optional due date, and selected category to the local SQLite database. Personal, Work, School, and Other categories are available by default; custom categories can also be created. Saved tasks appear on the Home tab.
+
+On iOS and Android, brain dump uses a quantized language model through React Native ExecuTorch. The brain-dump text is processed on the device and is not sent to an AI server. The model files are downloaded from the model registry on first use and cached on the device; the first setup requires internet access and several hundred megabytes of free storage.
+
+On web, brain dump sends text to `server/index.ts`. The API holds the OpenAI credentials and prompts OpenAI to return a numbered task list. The browser never receives or stores the API key. Configure `.env` from `.env.example`, then start the backend and web app in separate terminals:
+
+```bash
+cp .env.example .env
+npm run api
+npm run web
+```
+
+Set `ALLOWED_WEB_ORIGIN` to the URL shown by Expo. If the API is hosted separately, set `EXPO_PUBLIC_API_URL` to its public URL. The server rejects missing API-key configuration and limits brain dumps to 4,000 characters.
 
 This native module does not run in Expo Go or on web. Use a physical iOS/Android development build (or a compatible simulator):
 
