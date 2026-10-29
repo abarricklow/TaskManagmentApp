@@ -4,7 +4,7 @@ import { router, useFocusEffect, useNavigation } from 'expo-router';
 import { useSQLiteContext } from 'expo-sqlite';
 import AntDesign from '@expo/vector-icons/AntDesign';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
-import { BorderWidths, Colors, FontSizes, FontWeights, GlobalStyles, IconSizes, Opacity, Radius, Spacing,} from '../styles/theme';
+import { BorderWidths, Colors, FontSizes, FontWeights, GlobalStyles, IconSizes, Opacity, Radius, Spacing,} from '../../styles/theme';
 
 type CategorySummary = {
   id: number;
@@ -18,6 +18,9 @@ type TaskPreview = {
   categoryId: number;
   priority: number;
 };
+
+// Route id for the automatic "Finished" category (see category/[id].tsx)
+const FINISHED_ID = 'finished';
 
 // How many task names to show on each category card
 const PREVIEW_LIMIT = 3;
@@ -35,6 +38,7 @@ export default function CategoryScreen() {
   const { width } = useWindowDimensions();
   const [categories, setCategories] = useState<CategorySummary[]>([]);
   const [previews, setPreviews] = useState<Record<number, TaskPreview[]>>({});
+  const [finishedTasks, setFinishedTasks] = useState<TaskPreview[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -90,12 +94,20 @@ export default function CategoryScreen() {
         WHERE completed = 0 AND category_id IS NOT NULL
         ORDER BY priority DESC, due_date IS NULL, due_date, id`
       );
+      // Completed tasks for the automatic "Finished" card, newest first
+      const finished = await db.getAllAsync<TaskPreview>(
+        `SELECT id, name, category_id AS categoryId, priority
+        FROM Tasks
+        WHERE completed = 1
+        ORDER BY id DESC`
+      );
       const grouped: Record<number, TaskPreview[]> = {};
       for (const task of tasks) {
         (grouped[task.categoryId] ??= []).push(task);
       }
       setCategories(rows);
       setPreviews(grouped);
+      setFinishedTasks(finished);
     } catch (loadError) {
       console.error('Unable to load categories:', loadError);
       setError('Your categories could not be loaded. Pull down to try again.');
@@ -206,6 +218,32 @@ export default function CategoryScreen() {
                 <TaskPreviewList tasks={previews[category.id] ?? []} />
               </Pressable>
             ))}
+            {/* Automatic category: always last, holds every completed task */}
+            <Pressable
+              accessibilityLabel={`Finished, ${formatCount(finishedTasks.length)}`}
+              accessibilityRole="button"
+              onPress={() =>
+                router.push({
+                  pathname: '/category/[id]',
+                  params: { id: FINISHED_ID, name: 'Finished' },
+                })
+              }
+              style={({ pressed }) => [
+                styles.card,
+                styles.gridCard,
+                styles.finishedCard,
+                { width: cardWidth },
+                pressed && styles.pressed,
+              ]}
+            >
+              <View style={styles.cardHeader}>
+                <Text style={styles.cardTitle}>Finished</Text>
+                <Text style={styles.cardDescription}>
+                  {formatCount(finishedTasks.length)}
+                </Text>
+              </View>
+              <TaskPreviewList finished tasks={finishedTasks} />
+            </Pressable>
           </View>
         )}
       </ScrollView>
@@ -270,9 +308,19 @@ export default function CategoryScreen() {
   );
 }
 
-function TaskPreviewList({ tasks }: { tasks: TaskPreview[] }) {
+function TaskPreviewList({
+  finished = false,
+  tasks,
+}: {
+  finished?: boolean;
+  tasks: TaskPreview[];
+}) {
   if (tasks.length === 0) {
-    return <Text style={styles.previewMore}>No open tasks</Text>;
+    return (
+      <Text style={styles.previewMore}>
+        {finished ? 'No finished tasks' : 'No open tasks'}
+      </Text>
+    );
   }
   const shown = tasks.slice(0, PREVIEW_LIMIT);
   const hiddenCount = tasks.length - shown.length;
@@ -281,7 +329,14 @@ function TaskPreviewList({ tasks }: { tasks: TaskPreview[] }) {
     <View style={styles.previewList}>
       {shown.map((task) => (
         <View key={task.id} style={styles.previewRow}>
-          {task.priority ? (
+          {finished ? (
+            <MaterialCommunityIcons
+              accessibilityLabel="Finished"
+              name="check"
+              size={IconSizes.small}
+              color={Colors.primary}
+            />
+          ) : task.priority ? (
             <MaterialCommunityIcons
               accessibilityLabel="Priority"
               name="star"
@@ -343,6 +398,9 @@ const styles = StyleSheet.create({
   gridCard: {
     gap: Spacing.sm,
     minHeight: 140,
+  },
+  finishedCard: {
+    backgroundColor: Colors.surfaceTint,
   },
   cardHeader: {
     gap: Spacing.xs,

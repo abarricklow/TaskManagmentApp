@@ -3,15 +3,21 @@ import { ActivityIndicator, Pressable, RefreshControl, ScrollView, StyleSheet, T
 import { router, Stack, useFocusEffect, useLocalSearchParams } from 'expo-router';
 import { useSQLiteContext } from 'expo-sqlite';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
-import { BorderWidths, Colors, FontSizes, FontWeights, IconSizes, Radius, Spacing, } from '../styles/theme';
+import { BorderWidths, Colors, FontSizes, FontWeights, IconSizes, Radius, Spacing, } from '../../styles/theme';
+import { SubtaskList, useSubtasks } from '../../components/SubtaskList';
 
 type Task = {
   id: number;
-  name: string;  
-  categoryName: string | null;
+  name: string;
+  categoryId?: number | null;
+  categoryName?: string | null;
   dueDate: string | null;
   priority: number;
 };
+
+// The "Finished" card on the Category tab opens this screen with this id.
+// It isn't a real category: it lists every completed task.
+const FINISHED_ID = 'finished';
 
 export default function CategoryDetailScreen() {
   const db = useSQLiteContext();
@@ -20,20 +26,35 @@ export default function CategoryDetailScreen() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);  
   const [completingTaskIds, setCompletingTaskIds] = useState<number[]>([]);
+  const { subtasksByTask, loadSubtasks, toggleSubtask, subtaskError } = useSubtasks();
 
-  const categoryName = name ?? 'Category';
+  const isFinished = id === FINISHED_ID;
+  const categoryName = name ?? (isFinished ? 'Finished' : 'Category');
 
   const loadTasks = useCallback(async () => {
     setIsLoading(true);
     setError(null);
     try {
-      const rows = await db.getAllAsync<Task>(
-        `SELECT id, name, due_date AS dueDate, priority
-        FROM Tasks
-        WHERE category_id = ? AND completed = 0
-        ORDER BY priority DESC, due_date IS NULL, due_date, id`,
-        Number(id)
-      );
+      const rows = isFinished
+        ? // Every completed task, sorted by its original category
+          // (same order as the Category tab), newest first within each
+          await db.getAllAsync<Task>(
+            `SELECT Tasks.id, Tasks.name, Tasks.category_id AS categoryId,
+              Category.name AS categoryName, Tasks.due_date AS dueDate,
+              Tasks.priority
+            FROM Tasks
+            LEFT JOIN Category ON Category.id = Tasks.category_id
+            WHERE Tasks.completed = 1
+            ORDER BY Category.id IS NULL, Category.id, Tasks.id DESC`
+          )
+        : await db.getAllAsync<Task>(
+            `SELECT id, name, due_date AS dueDate, priority
+            FROM Tasks
+            WHERE category_id = ? AND completed = 0
+            ORDER BY priority DESC, due_date IS NULL, due_date, id`,
+            Number(id)
+          );
+      await loadSubtasks(rows.map((task) => task.id));
       setTasks(rows);
     } catch (loadError) {
       console.error('Unable to load category tasks:', loadError);
@@ -41,17 +62,27 @@ export default function CategoryDetailScreen() {
     } finally {
       setIsLoading(false);
     }
-  }, [db, id]);
+  }, [db, id, isFinished, loadSubtasks]);
 
+  // In a normal category this marks the task complete (it moves to Finished).
+  // In Finished it restores the task to its original category.
   async function completeTask(taskId: number) {
     setCompletingTaskIds((current) => [...current, taskId]);
     setError(null);
     try {
-      await db.runAsync('UPDATE Tasks SET completed = 1 WHERE id = ?', taskId);
+      await db.runAsync(
+        'UPDATE Tasks SET completed = ? WHERE id = ?',
+        isFinished ? 0 : 1,
+        taskId
+      );
       setTasks((current) => current.filter((task) => task.id !== taskId));
     } catch (completionError) {
       console.error('Unable to complete task:', completionError);
-      setError('The task could not be marked complete. Please try again.');
+      setError(
+        isFinished
+          ? 'The task could not be restored. Please try again.'
+          : 'The task could not be marked complete. Please try again.'
+      );
     } finally {
       setCompletingTaskIds((current) => current.filter((id) => id !== taskId));
     }
@@ -96,7 +127,8 @@ export default function CategoryDetailScreen() {
           title: categoryName,
           headerBackTitle: 'Categories',
           headerStyle: { backgroundColor: Colors.background },
-          headerRight: () => (
+          // Tasks can't be added straight to Finished
+          headerRight: isFinished ? undefined : () => (
             <Pressable
               accessibilityLabel={`Add a task to ${categoryName}`}
               accessibilityRole="button"
@@ -123,10 +155,16 @@ export default function CategoryDetailScreen() {
       >
         <Text style={styles.heading}>{categoryName}</Text>
         <Text style={styles.description}>
-          {tasks.length === 1 ? '1 open task' : `${tasks.length} open tasks`}
-          {' · Tap ☆ to show a task on Home'}
+          {isFinished
+            ? `${tasks.length === 1 ? '1 finished task' : `${tasks.length} finished tasks`} · Tap ✓ to restore a task`
+            : `${tasks.length === 1 ? '1 open task' : `${tasks.length} open tasks`} · Tap ☆ to show a task on Home`}
         </Text>
 
+        {subtaskError && (
+          <Text accessibilityRole="alert" style={styles.error}>
+            {subtaskError}
+          </Text>
+        )}
         {isLoading && tasks.length === 0 ? (
           <ActivityIndicator color={Colors.primary} />
         ) : error ? (
@@ -135,40 +173,81 @@ export default function CategoryDetailScreen() {
           </Text>
         ) : tasks.length === 0 ? (
           <View style={styles.card}>
-            <Text style={styles.taskName}>Nothing here yet</Text>
+            <Text style={styles.taskName}>
+              {isFinished ? 'No finished tasks yet' : 'Nothing here yet'}
+            </Text>
             <Text style={styles.description}>
-              Tasks you add to this category will show up here.
+              {isFinished
+                ? 'Tasks you check off will show up here.'
+                : 'Tasks you add to this category will show up here.'}
             </Text>
           </View>
         ) : (
+        <View style={styles.groupList}>
+          {/* Finished is split into one section per original category;
+              a normal category is a single section with no heading */}
+          {(isFinished
+            ? groupByCategory(tasks)
+            : [{ categoryId: null, name: null, tasks }]
+          ).map((group) => (
+          <View key={group.categoryId ?? 'none'} style={styles.group}>
+          {group.name !== null && (
+            <Text accessibilityRole="header" style={styles.groupTitle}>
+              {group.name}
+            </Text>
+          )}
         <View style={styles.taskList}>
-          {tasks.map((task) => (
+          {group.tasks.map((task) => (
             <View key={task.id} style={styles.taskCard}>
+              <View style={styles.taskRow}>
               <Pressable
-                accessibilityLabel={`Mark ${task.name} as complete`}
+                accessibilityLabel={
+                  isFinished
+                    ? `Restore ${task.name} to open tasks`
+                    : `Mark ${task.name} as complete`
+                }
                 accessibilityRole="checkbox"
                 accessibilityState={{
-                  checked: false,
+                  checked: isFinished,
                   disabled: completingTaskIds.includes(task.id),
                 }}
                 disabled={completingTaskIds.includes(task.id)}
                 onPress={() => void completeTask(task.id)}
                 style={({ pressed }) => [
                   styles.checkbox,
+                  isFinished && styles.checkboxChecked,
                   pressed && styles.checkboxPressed,
                   completingTaskIds.includes(task.id) && styles.checkboxDisabled,
                 ]}
-              />
-              <View style={styles.taskDetails}>
-                <Text style={styles.taskName}>{task.name}</Text>
-                {(task.categoryName || task.dueDate) && (
-                  <Text style={styles.taskMetadata}>
-                    {[task.categoryName, task.dueDate && `Due ${formatDate(task.dueDate)}`]
-                      .filter(Boolean)
-                      .join(' · ')}
-                  </Text>
+              >
+                {isFinished && (
+                  <MaterialCommunityIcons
+                    color={Colors.onPrimary}
+                    name="check"
+                    size={IconSizes.small + 6}
+                  />
                 )}
-              </View>
+              </Pressable>
+              <Pressable
+                accessibilityHint="Opens the task so you can edit it"
+                accessibilityLabel={`Edit ${task.name}`}
+                accessibilityRole="button"
+                onPress={() =>
+                  router.push({
+                    pathname: '/new-task',
+                    params: { taskId: String(task.id), backTitle: categoryName },
+                  })
+                }
+                style={({ pressed }) => [styles.taskDetails, pressed && styles.taskPressed]}
+              >
+                <Text style={[styles.taskName, isFinished && styles.taskNameFinished]}>
+                  {task.name}
+                </Text>
+                {task.dueDate && (
+                  <Text style={styles.taskMetadata}>Due {formatDate(task.dueDate)}</Text>
+                )}
+              </Pressable>
+              {!isFinished && (
               <Pressable
                 accessibilityLabel={
                   task.priority
@@ -187,13 +266,47 @@ export default function CategoryDetailScreen() {
                   color={task.priority ? Colors.primary : Colors.textSecondary}
                 />
               </Pressable>
+              )}
+              </View>
+              <SubtaskList
+                onToggle={(subtask) => void toggleSubtask(subtask)}
+                subtasks={subtasksByTask[task.id] ?? []}
+              />
             </View>
+          ))}
+        </View>
+          </View>
           ))}
         </View>
         )}
       </ScrollView>
     </>
   );
+}
+
+type TaskGroup = {
+  categoryId: number | null;
+  name: string | null;
+  tasks: Task[];
+};
+
+// Tasks arrive sorted by category, so each new category starts a new group
+function groupByCategory(tasks: Task[]) {
+  const groups: TaskGroup[] = [];
+  for (const task of tasks) {
+    const categoryId = task.categoryId ?? null;
+    const last = groups[groups.length - 1];
+    if (last && last.categoryId === categoryId) {
+      last.tasks.push(task);
+    } else {
+      groups.push({
+        categoryId,
+        name: task.categoryName ?? 'No category',
+        tasks: [task],
+      });
+    }
+  }
+  return groups;
 }
 
 function formatDate(value: string) {
@@ -249,18 +362,32 @@ const styles = StyleSheet.create({
 
 
 
+  groupList: {
+    gap: Spacing.lg,
+  },
+  group: {
+    gap: Spacing.sm,
+  },
+  groupTitle: {
+    color: Colors.primary,
+    fontSize: FontSizes.subtitle,
+    fontWeight: FontWeights.bold,
+  },
   taskList: {
     gap: Spacing.sm,
   },
   taskCard: {
-    alignItems: 'center',
     backgroundColor: '#FFFFFF',
     borderColor: Colors.border,
     borderRadius: 12,
     borderWidth: 1,
-    flexDirection: 'row',
     gap: Spacing.sm,
     padding: Spacing.md,
+  },
+  taskRow: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    gap: Spacing.sm,
   },
   checkbox: {
     alignItems: 'center',
@@ -270,6 +397,16 @@ const styles = StyleSheet.create({
     height: 24,
     justifyContent: 'center',
     width: 24,
+  },
+  checkboxChecked: {
+    backgroundColor: Colors.primary,
+  },
+  taskNameFinished: {
+    color: Colors.textSecondary,
+    textDecorationLine: 'line-through',
+  },
+  taskPressed: {
+    opacity: 0.6,
   },
   checkboxPressed: {
     backgroundColor: '#E8F3E5',

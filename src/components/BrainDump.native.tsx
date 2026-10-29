@@ -12,7 +12,7 @@ import {
 import Constants from 'expo-constants';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { useSQLiteContext } from 'expo-sqlite';
-import { Colors, FontSizes, Spacing } from '../app/styles/theme';
+import { Colors, FontSizes, Spacing } from '../styles/theme';
 
 type SuggestedTask = {
   name: string;

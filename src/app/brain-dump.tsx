@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { ScrollView, StyleSheet, Text } from 'react-native';
 import { router, Stack } from 'expo-router';
 import { useSQLiteContext } from 'expo-sqlite';
-import { Colors, FontSizes, Spacing } from './styles/theme';
+import { Colors, FontSizes, Spacing } from '../styles/theme';
 import BrainDump from '../components/BrainDump';
 
 export default function BrainDumpScreen() {

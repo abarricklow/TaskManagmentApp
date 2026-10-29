@@ -1,5 +1,5 @@
 import { StyleSheet, Text, View } from 'react-native';
-import { Colors, FontSizes, Spacing } from '../app/styles/theme';
+import { Colors, FontSizes, Spacing } from '../styles/theme';
 
 export default function BrainDump(_: {
   onSaveTasks: (

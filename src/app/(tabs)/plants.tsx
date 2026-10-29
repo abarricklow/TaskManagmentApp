@@ -1,5 +1,5 @@
 import { Text, View} from 'react-native';
-import { Colors, GlobalStyles } from '../styles/theme';
+import { Colors, GlobalStyles } from '../../styles/theme';
 
 export default function PlantScreen() {
   return (

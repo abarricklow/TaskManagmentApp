@@ -1,5 +1,5 @@
 import { Tabs } from 'expo-router';
-import { Colors, IconSizes } from '../styles/theme';
+import { Colors, IconSizes } from '../../styles/theme';
 import AntDesign from '@expo/vector-icons/AntDesign';
 import Entypo from '@expo/vector-icons/Entypo';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';

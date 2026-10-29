@@ -1,6 +1,6 @@
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { router } from 'expo-router';
-import { Colors, FontSizes, GlobalStyles, Spacing } from '../styles/theme';
+import { Colors, FontSizes, GlobalStyles, Spacing } from '../../styles/theme';
 
 export default function WellnessScreen() {
   return (

@@ -30,6 +30,20 @@ export async function initializeDatabase(db: SQLiteDatabase) {
         ON DELETE SET NULL
     );
 
+    -- Smaller steps that belong to a task (deleted along with their task)
+    CREATE TABLE IF NOT EXISTS Subtasks (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      task_id INTEGER NOT NULL,
+      name TEXT NOT NULL,
+      completed INTEGER NOT NULL DEFAULT 0,
+      position INTEGER NOT NULL DEFAULT 0,
+      FOREIGN KEY (task_id)
+        REFERENCES Tasks(id)
+        ON DELETE CASCADE
+    );
+
+    CREATE INDEX IF NOT EXISTS idx_subtasks_task_id ON Subtasks (task_id);
+
     CREATE TABLE IF NOT EXISTS Plants (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       plant_name TEXT NOT NULL,

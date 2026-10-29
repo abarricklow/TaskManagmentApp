@@ -1,6 +1,6 @@
 import { router } from 'expo-router';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
-import { Colors, FontSizes, Spacing } from '../styles/theme';
+import { Colors, FontSizes, Spacing } from '../../styles/theme';
 
 export default function AddScreen() {
   return (

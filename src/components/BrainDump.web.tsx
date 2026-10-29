@@ -9,7 +9,7 @@ import {
   View,
 } from 'react-native';
 import { useSQLiteContext } from 'expo-sqlite';
-import { Colors, FontSizes, Spacing } from '../app/styles/theme';
+import { Colors, FontSizes, Spacing } from '../styles/theme';
 
 type SuggestedTask = {
   name: string;

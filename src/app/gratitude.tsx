@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
 import { router, Stack } from 'expo-router';
-import { Colors, FontSizes, Spacing } from './styles/theme';
+import { Colors, FontSizes, Spacing } from '../styles/theme';
 
 type GratitudeStage = 'welcome' | 'entry' | 'done';
 

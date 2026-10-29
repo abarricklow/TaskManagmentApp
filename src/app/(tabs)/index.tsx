@@ -8,14 +8,16 @@ import {
   Text,
   View,
 } from 'react-native';
-import { useFocusEffect } from 'expo-router';
+import { router, useFocusEffect } from 'expo-router';
 import { useSQLiteContext } from 'expo-sqlite';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
-import { Colors, FontSizes, IconSizes, Spacing } from '../styles/theme';
+import { Colors, FontSizes, IconSizes, Spacing } from '../../styles/theme';
+import { SubtaskList, useSubtasks } from '../../components/SubtaskList';
 
 type Task = {
   id: number;
   name: string;
+  categoryId: number | null;
   categoryName: string | null;
   dueDate: string | null;
 };
@@ -26,19 +28,22 @@ export default function Index() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [completingTaskIds, setCompletingTaskIds] = useState<number[]>([]);
+  const { subtasksByTask, loadSubtasks, toggleSubtask, subtaskError } = useSubtasks();
 
   const loadTasks = useCallback(async () => {
     setIsLoading(true);
     setError(null);
     try {
       const savedTasks = await db.getAllAsync<Task>(
-        `SELECT Tasks.id, Tasks.name, Category.name AS categoryName,
-          Tasks.due_date AS dueDate
+        `SELECT Tasks.id, Tasks.name, Tasks.category_id AS categoryId,
+          Category.name AS categoryName, Tasks.due_date AS dueDate
         FROM Tasks
         LEFT JOIN Category ON Category.id = Tasks.category_id
         WHERE Tasks.completed = 0 AND Tasks.priority = 1
-        ORDER BY Tasks.due_date IS NULL, Tasks.due_date, Tasks.id DESC`
+        ORDER BY Category.id IS NULL, Category.id,
+          Tasks.due_date IS NULL, Tasks.due_date, Tasks.id DESC`
       );
+      await loadSubtasks(savedTasks.map((task) => task.id));
       setTasks(savedTasks);
     } catch (loadError) {
       console.error('Unable to load tasks:', loadError);
@@ -46,7 +51,7 @@ export default function Index() {
     } finally {
       setIsLoading(false);
     }
-  }, [db]);
+  }, [db, loadSubtasks]);
 
   async function completeTask(taskId: number) {
     setCompletingTaskIds((current) => [...current, taskId]);
@@ -102,6 +107,11 @@ export default function Index() {
         {tasks.length === 1 ? '1 priority task' : `${tasks.length} priority tasks`}
       </Text>
 
+      {subtaskError && (
+        <Text accessibilityRole="alert" style={styles.error}>
+          {subtaskError}
+        </Text>
+      )}
       {isLoading && tasks.length === 0 ? (
         <ActivityIndicator color={Colors.primary} />
       ) : error ? (
@@ -116,47 +126,69 @@ export default function Index() {
           </Text>
         </View>
       ) : (
-        <View style={styles.taskList}>
-          {tasks.map((task) => (
-            <View key={task.id} style={styles.taskCard}>
-              <Pressable
-                accessibilityLabel={`Mark ${task.name} as complete`}
-                accessibilityRole="checkbox"
-                accessibilityState={{
-                  checked: false,
-                  disabled: completingTaskIds.includes(task.id),
-                }}
-                disabled={completingTaskIds.includes(task.id)}
-                onPress={() => void completeTask(task.id)}
-                style={({ pressed }) => [
-                  styles.checkbox,
-                  pressed && styles.checkboxPressed,
-                  completingTaskIds.includes(task.id) && styles.checkboxDisabled,
-                ]}
-              />
-              <View style={styles.taskDetails}>
-                <Text style={styles.taskName}>{task.name}</Text>
-                {(task.categoryName || task.dueDate) && (
-                  <Text style={styles.taskMetadata}>
-                    {[task.categoryName, task.dueDate && `Due ${formatDate(task.dueDate)}`]
-                      .filter(Boolean)
-                      .join(' · ')}
-                  </Text>
-                )}
+        <View style={styles.groupList}>
+          {groupByCategory(tasks).map((group) => (
+            <View key={group.categoryId ?? 'none'} style={styles.group}>
+              <Text accessibilityRole="header" style={styles.groupTitle}>
+                {group.name}
+              </Text>
+              <View style={styles.taskList}>
+                {group.tasks.map((task) => (
+                  <View key={task.id} style={styles.taskCard}>
+                    <View style={styles.taskRow}>
+                    <Pressable
+                      accessibilityLabel={`Mark ${task.name} as complete`}
+                      accessibilityRole="checkbox"
+                      accessibilityState={{
+                        checked: false,
+                        disabled: completingTaskIds.includes(task.id),
+                      }}
+                      disabled={completingTaskIds.includes(task.id)}
+                      onPress={() => void completeTask(task.id)}
+                      style={({ pressed }) => [
+                        styles.checkbox,
+                        pressed && styles.checkboxPressed,
+                        completingTaskIds.includes(task.id) && styles.checkboxDisabled,
+                      ]}
+                    />
+                    <Pressable
+                      accessibilityHint="Opens the task so you can edit it"
+                      accessibilityLabel={`Edit ${task.name}`}
+                      accessibilityRole="button"
+                      onPress={() =>
+                        router.push({
+                          pathname: '/new-task',
+                          params: { taskId: String(task.id), backTitle: 'Home' },
+                        })
+                      }
+                      style={({ pressed }) => [styles.taskDetails, pressed && styles.taskPressed]}
+                    >
+                      <Text style={styles.taskName}>{task.name}</Text>
+                      {task.dueDate && (
+                        <Text style={styles.taskMetadata}>Due {formatDate(task.dueDate)}</Text>
+                      )}
+                    </Pressable>
+                    <Pressable
+                      accessibilityLabel={`Remove ${task.name} from priority tasks`}
+                      accessibilityRole="button"
+                      hitSlop={Spacing.sm}
+                      onPress={() => void removePriority(task.id)}
+                      style={({ pressed }) => pressed && styles.checkboxDisabled}
+                    >
+                      <MaterialCommunityIcons
+                        name="star"
+                        size={IconSizes.medium}
+                        color={Colors.primary}
+                      />
+                    </Pressable>
+                    </View>
+                    <SubtaskList
+                      onToggle={(subtask) => void toggleSubtask(subtask)}
+                      subtasks={subtasksByTask[task.id] ?? []}
+                    />
+                  </View>
+                ))}
               </View>
-              <Pressable
-                accessibilityLabel={`Remove ${task.name} from priority tasks`}
-                accessibilityRole="button"
-                hitSlop={Spacing.sm}
-                onPress={() => void removePriority(task.id)}
-                style={({ pressed }) => pressed && styles.checkboxDisabled}
-              >
-                <MaterialCommunityIcons
-                  name="star"
-                  size={IconSizes.medium}
-                  color={Colors.primary}
-                />
-              </Pressable>
             </View>
           ))}
         </View>
@@ -204,18 +236,32 @@ const styles = StyleSheet.create({
     color: Colors.textSecondary,
     fontSize: FontSizes.body,
   },
+  groupList: {
+    gap: Spacing.lg,
+  },
+  group: {
+    gap: Spacing.sm,
+  },
+  groupTitle: {
+    color: Colors.primary,
+    fontSize: FontSizes.subtitle,
+    fontWeight: 'bold',
+  },
   taskList: {
     gap: Spacing.sm,
   },
   taskCard: {
-    alignItems: 'center',
     backgroundColor: '#FFFFFF',
     borderColor: Colors.border,
     borderRadius: 12,
     borderWidth: 1,
-    flexDirection: 'row',
     gap: Spacing.sm,
     padding: Spacing.md,
+  },
+  taskRow: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    gap: Spacing.sm,
   },
   checkbox: {
     alignItems: 'center',
@@ -225,6 +271,9 @@ const styles = StyleSheet.create({
     height: 24,
     justifyContent: 'center',
     width: 24,
+  },
+  taskPressed: {
+    opacity: 0.6,
   },
   checkboxPressed: {
     backgroundColor: '#E8F3E5',
@@ -262,6 +311,30 @@ const styles = StyleSheet.create({
     fontSize: FontSizes.body,
   },
 });
+
+type TaskGroup = {
+  categoryId: number | null;
+  name: string;
+  tasks: Task[];
+};
+
+// Tasks arrive sorted by category, so each new category starts a new group
+function groupByCategory(tasks: Task[]) {
+  const groups: TaskGroup[] = [];
+  for (const task of tasks) {
+    const last = groups[groups.length - 1];
+    if (last && last.categoryId === task.categoryId) {
+      last.tasks.push(task);
+    } else {
+      groups.push({
+        categoryId: task.categoryId,
+        name: task.categoryName ?? 'No category',
+        tasks: [task],
+      });
+    }
+  }
+  return groups;
+}
 
 function formatDate(value: string) {
   const [year, month, day] = value.split('-').map(Number);
