@@ -2,17 +2,24 @@ import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { router } from 'expo-router';
 import { Colors, FontSizes, GlobalStyles, Spacing } from '../../styles/theme';
 
+// Options that open a page
+const ROUTES: Record<string, '/gratitude' | '/meditation'> = {
+  Gratitude: '/gratitude',
+  Meditation: '/meditation',
+};
+
 export default function WellnessScreen() {
   return (
     <View style={styles.content}>
       <View style={styles.options}>
         {['White Noise', 'Journaling', 'Meditation', 'Gratitude'].map((option) => {
-          const Option = option === 'Gratitude' ? Pressable : View;
+          const route = ROUTES[option];
+          const Option = route ? Pressable : View;
           return (
             <Option
-              accessibilityRole={option === 'Gratitude' ? 'button' : undefined}
+              accessibilityRole={route ? 'button' : undefined}
               key={option}
-              onPress={option === 'Gratitude' ? () => router.push('/gratitude') : undefined}
+              onPress={route ? () => router.push(route) : undefined}
               style={styles.optionButton}
             >
               <Text style={styles.optionLabel}>{option}</Text>
@@ -33,6 +40,7 @@ const styles = StyleSheet.create({
   },
   options: {
     alignSelf: 'stretch',
+    flex: 1,
     gap: Spacing.md,
     marginTop: Spacing.lg,
   },
@@ -42,6 +50,8 @@ const styles = StyleSheet.create({
     borderColor: Colors.border,
     borderRadius: 12,
     borderWidth: 1,
+    flex: 1,
+    justifyContent: 'center',
     padding: Spacing.md,
   },
   optionLabel: {
