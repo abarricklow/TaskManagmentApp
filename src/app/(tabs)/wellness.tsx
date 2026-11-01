@@ -3,7 +3,8 @@ import { router } from 'expo-router';
 import { Colors, FontSizes, GlobalStyles, Spacing } from '../../styles/theme';
 
 // Options that open a page
-const ROUTES: Record<string, '/gratitude' | '/meditation'> = {
+const ROUTES: Record<string, '/gratitude' | '/meditation' | '/white-noise'> = {
+  'White Noise': '/white-noise',
   Gratitude: '/gratitude',
   Meditation: '/meditation',
 };
