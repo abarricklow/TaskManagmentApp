@@ -51,6 +51,22 @@ export async function initializeDatabase(db: SQLiteDatabase) {
       percent_grown REAL NOT NULL DEFAULT 0
         CHECK (percent_grown >= 0 AND percent_grown <= 100)
     );
+
+      -- Stores the user's cumulative plant growth
+      CREATE TABLE IF NOT EXISTS PlantProgress (
+        id INTEGER PRIMARY KEY CHECK (id = 1),
+        total_points REAL NOT NULL DEFAULT 0
+      );
+
+      INSERT OR IGNORE INTO PlantProgress (id, total_points)
+      VALUES (1, 0);
+
+      -- Records how much growth each task currently contributes
+      CREATE TABLE IF NOT EXISTS TaskGrowth (
+        task_id INTEGER PRIMARY KEY,
+        points REAL NOT NULL DEFAULT 0
+      );
+
     `);
 
     const taskColumns = await db.getAllAsync<{ name: string }>(
