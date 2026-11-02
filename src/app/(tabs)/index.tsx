@@ -24,6 +24,30 @@ import {
 import plantpot from '../../../assets/art/plantpot.png';
 import babyplant from '../../../assets/art/babyplant.png';
 import growingplant from '../../../assets/art/growingplant.png';
+import plant1 from '../../../assets/art/plant1.png';
+import plant2 from '../../../assets/art/plant2.png';
+import plant3 from '../../../assets/art/plant3.png';
+import plant4 from '../../../assets/art/plant4.png';
+import plant5 from '../../../assets/art/plant5.png';
+import plant6 from '../../../assets/art/plant6.png';
+import plant7 from '../../../assets/art/plant7.png';
+import plant8 from '../../../assets/art/plant8.png';
+import plant9 from '../../../assets/art/plant9.png';
+import plant10 from '../../../assets/art/plant10.png';
+import plant11 from '../../../assets/art/plant11.png';
+import plant12 from '../../../assets/art/plant12.png';
+import plant13 from '../../../assets/art/plant13.png';
+import plant14 from '../../../assets/art/plant14.png';
+import plant15 from '../../../assets/art/plant15.png';
+import plant16 from '../../../assets/art/plant16.png';
+import plant17 from '../../../assets/art/plant17.png';
+
+const plantImages = [
+  plant1, plant2, plant3, plant4, plant5,
+  plant6, plant7, plant8, plant9, plant10,
+  plant11, plant12, plant13, plant14, plant15,
+  plant16, plant17,
+];
 
 type Task = {
   id: number;
@@ -144,12 +168,17 @@ export default function Index() {
   );
 
   // Plant growth calculations
-  const currentPlantPoints = totalGrowthPoints % 12;
-
-  const currentPlantNumber = Math.min(
-    Math.floor(totalGrowthPoints / 12) + 1,
+  const completedPlantCount = Math.min(
+    Math.floor(totalGrowthPoints / 12),
     17
   );
+
+  const currentPlantNumber = Math.min(
+    completedPlantCount + 1,
+    17
+  );
+
+  const currentPlantPoints = totalGrowthPoints % 12;
 
   const plantImage =
     currentPlantPoints < 4
@@ -173,7 +202,7 @@ export default function Index() {
       {/* Plant display */}
       <View style={styles.petArea}>
         <Text style={styles.petAreaTitle}>
-          Your plant pet
+          Your plant
         </Text>
 
         <View style={styles.plantDisplay}>

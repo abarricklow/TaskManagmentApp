@@ -14,6 +14,7 @@ export type Subtask = {
 
 // Recalculates one task's growth contribution.
 // Must be called inside a database transaction.
+
 async function updateTaskGrowth(
   db: SQLiteDatabase,
   taskId: number
@@ -38,8 +39,6 @@ async function updateTaskGrowth(
   const total = subtasks?.total ?? 0;
   const completed = subtasks?.completed ?? 0;
 
-  // A completed parent task always contributes exactly 4 points.
-  // Otherwise, completed subtasks contribute proportionally.
   const newPoints = task.completed
     ? 4
     : total > 0
@@ -61,13 +60,65 @@ async function updateTaskGrowth(
     newPoints
   );
 
-  if (difference !== 0) {
+  // Find plants already collected
+  const collectedPlants = await db.getAllAsync<{
+    plant_name: string;
+  }>(
+    "SELECT plant_name FROM Plants WHERE plant_name GLOB 'plant[0-9]*'"
+  );
+
+  const collectedNumbers = new Set(
+    collectedPlants
+      .map((plant) => {
+        const match = plant.plant_name.match(/^plant(\d+)$/);
+        return match ? Number(match[1]) : null;
+      })
+      .filter((number): number is number =>
+        number !== null && number >= 1 && number <= 17
+      )
+  );
+
+  // Find the number of consecutively collected plants
+  let completedCount = 0;
+
+  while (collectedNumbers.has(completedCount + 1)) {
+    completedCount++;
+  }
+
+  const minimumPoints = completedCount * 12;
+
+  // Update growth without removing already collected plants
+  await db.runAsync(
+    `UPDATE PlantProgress
+     SET total_points = MIN(204, MAX(?, total_points + ?))
+     WHERE id = 1`,
+    minimumPoints,
+    difference
+  );
+
+  const progress = await db.getFirstAsync<{
+    total_points: number;
+  }>(
+    'SELECT total_points FROM PlantProgress WHERE id = 1'
+  );
+
+  const totalPoints = progress?.total_points ?? 0;
+
+  // Automatically collect every plant whose milestone is reached
+  while (
+    completedCount < 17 &&
+    totalPoints >= (completedCount + 1) * 12
+  ) {
+    const nextPlant = completedCount + 1;
+
     await db.runAsync(
-      `UPDATE PlantProgress
-       SET total_points = MAX(0, total_points + ?)
-       WHERE id = 1`,
-      difference
+      `INSERT INTO Plants (plant_name, description, percent_grown)
+       VALUES (?, ?, 100)`,
+      `plant${nextPlant}`,
+      'Collected plant'
     );
+
+    completedCount++;
   }
 }
 
