@@ -1,9 +1,9 @@
 import { useCallback, useState } from 'react';
-import { ActivityIndicator, Pressable, RefreshControl, ScrollView, StyleSheet, Text, View,} from 'react-native';
+import { ActivityIndicator, Modal, Pressable, RefreshControl, ScrollView, StyleSheet, Text, View,} from 'react-native';
 import { router, Stack, useFocusEffect, useLocalSearchParams } from 'expo-router';
 import { useSQLiteContext } from 'expo-sqlite';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
-import { BorderWidths, Colors, FontSizes, FontWeights, IconSizes, Radius, Spacing, } from '../../styles/theme';
+import { BorderWidths, Colors, FontSizes, FontWeights, GlobalStyles, IconSizes, Radius, Spacing, } from '../../styles/theme';
 import { SubtaskList, useSubtasks } from '../../components/SubtaskList';
 
 type Task = {
@@ -27,6 +27,13 @@ export default function CategoryDetailScreen() {
   const [error, setError] = useState<string | null>(null);  
   const [completingTaskIds, setCompletingTaskIds] = useState<number[]>([]);
   const { subtasksByTask, loadSubtasks, toggleSubtask, subtaskError } = useSubtasks();
+
+  // Delete category modal state
+  const [isDeleteModalVisible, setIsDeleteModalVisible] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [deleteError, setDeleteError] = useState<string | null>(null);
+  // Open + finished tasks in this category, shown in the warning
+  const [deleteTaskCount, setDeleteTaskCount] = useState(0);
 
   const isFinished = id === FINISHED_ID;
   const categoryName = name ?? (isFinished ? 'Finished' : 'Category');
@@ -120,6 +127,59 @@ export default function CategoryDetailScreen() {
     }, [loadTasks])
   );
 
+  async function openDeleteModal() {
+    setDeleteError(null);
+    try {
+      // Count finished tasks too, since they get deleted as well
+      const row = await db.getFirstAsync<{ count: number }>(
+        'SELECT COUNT(*) AS count FROM Tasks WHERE category_id = ?',
+        Number(id)
+      );
+      setDeleteTaskCount(row?.count ?? 0);
+    } catch (countError) {
+      console.error('Unable to count category tasks:', countError);
+      setDeleteTaskCount(tasks.length);
+    }
+    setIsDeleteModalVisible(true);
+  }
+
+  function closeDeleteModal() {
+    if (isDeleting) return;
+    setIsDeleteModalVisible(false);
+    setDeleteError(null);
+  }
+
+  // Deletes the category, its tasks (open and finished) and their subtasks.
+  // Each table is cleared explicitly, so this works whether or not the
+  // schema has ON DELETE CASCADE / foreign keys turned on.
+  async function deleteCategory() {
+    const categoryId = Number(id);
+    setIsDeleting(true);
+    setDeleteError(null);
+    try {
+      await db.withTransactionAsync(async () => {
+        await db.runAsync(
+          'DELETE FROM Subtasks WHERE task_id IN (SELECT id FROM Tasks WHERE category_id = ?)',
+          categoryId
+        );
+        await db.runAsync('DELETE FROM Tasks WHERE category_id = ?', categoryId);
+        await db.runAsync('DELETE FROM Category WHERE id = ?', categoryId);
+      });
+      setIsDeleteModalVisible(false);
+      // The Category tab reloads on focus, so the card disappears there
+      if (router.canGoBack()) {
+        router.back();
+      } else {
+        router.replace('/(tabs)/category');
+      }
+    } catch (deleteFailure) {
+      console.error('Unable to delete category:', deleteFailure);
+      setDeleteError('The category could not be deleted. Please try again.');
+    } finally {
+      setIsDeleting(false);
+    }
+  }
+
   return (
     <>
       <Stack.Screen
@@ -127,8 +187,22 @@ export default function CategoryDetailScreen() {
           title: categoryName,
           headerBackTitle: 'Categories',
           headerStyle: { backgroundColor: Colors.background },
-          // Tasks can't be added straight to Finished
+          // Finished can't be deleted, and tasks can't be added straight to it
           headerRight: isFinished ? undefined : () => (
+            <View style={styles.headerActions}>
+            <Pressable
+              accessibilityLabel={`Delete ${categoryName}`}
+              accessibilityRole="button"
+              hitSlop={Spacing.sm}
+              onPress={() => void openDeleteModal()}
+              style={({ pressed }) => [styles.headerButton, pressed && styles.headerButtonPressed]}
+            >
+              <MaterialCommunityIcons
+                color={Colors.textSecondary}
+                name="trash-can-outline"
+                size={IconSizes.medium}
+              />
+            </Pressable>
             <Pressable
               accessibilityLabel={`Add a task to ${categoryName}`}
               accessibilityRole="button"
@@ -144,6 +218,7 @@ export default function CategoryDetailScreen() {
                 size={IconSizes.medium}
               />
             </Pressable>
+            </View>
           ),
         }}
       />
@@ -280,6 +355,57 @@ export default function CategoryDetailScreen() {
         </View>
         )}
       </ScrollView>
+
+      <Modal
+        animationType="fade"
+        onRequestClose={closeDeleteModal}
+        transparent
+        visible={isDeleteModalVisible}
+      >
+        <View style={GlobalStyles.modalBackdrop}>
+          <View style={GlobalStyles.modalCard}>
+            <Text style={styles.heading}>Delete {categoryName}?</Text>
+            <Text style={styles.description}>
+              {deleteTaskCount === 0
+                ? 'This category has no tasks.'
+                : `Its ${deleteTaskCount === 1 ? 'task' : `${deleteTaskCount} tasks`}, including finished ones, will be deleted too.`}{' '}
+              This can't be undone.
+            </Text>
+            {deleteError && (
+              <Text accessibilityRole="alert" style={styles.error}>
+                {deleteError}
+              </Text>
+            )}
+            <View style={GlobalStyles.modalActions}>
+              <Pressable
+                accessibilityRole="button"
+                disabled={isDeleting}
+                onPress={closeDeleteModal}
+                style={({ pressed }) => [
+                  GlobalStyles.cancelButton,
+                  (pressed || isDeleting) && styles.headerButtonPressed,
+                ]}
+              >
+                <Text style={GlobalStyles.cancelLabel}>Cancel</Text>
+              </Pressable>
+              <Pressable
+                accessibilityRole="button"
+                disabled={isDeleting}
+                onPress={() => void deleteCategory()}
+                style={({ pressed }) => [
+                  GlobalStyles.submitButton,
+                  styles.deleteButton,
+                  (pressed || isDeleting) && styles.headerButtonPressed,
+                ]}
+              >
+                <Text style={GlobalStyles.submitLabel}>
+                  {isDeleting ? 'Deleting...' : 'Delete'}
+                </Text>
+              </Pressable>
+            </View>
+          </View>
+        </View>
+      </Modal>
     </>
   );
 }
@@ -315,8 +441,18 @@ function formatDate(value: string) {
 }
 
 const styles = StyleSheet.create({
+  headerActions: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    gap: Spacing.sm,
+  },
   headerButton: {
     padding: Spacing.xs,
+  },
+  deleteButton: {
+    backgroundColor: Colors.error,
+    paddingHorizontal: Spacing.lg,
+    paddingVertical: Spacing.sm,
   },
   headerButtonPressed: {
     opacity: 0.7,
