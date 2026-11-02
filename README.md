@@ -65,14 +65,6 @@ The API listens on `http://localhost:3001` by default. You can check that it is 
 
 ### Start the front end
 
-In another terminal at the app root, run the web app:
-
-```bash
-npm run web
-```
-
-Open the URL printed by Expo, usually `http://localhost:8081`. The web app uses `EXPO_PUBLIC_API_URL` from `.env` to connect to the API; the example value is `http://localhost:3001`. If you change the web app's origin or host the API elsewhere, update `ALLOWED_WEB_ORIGIN` and `EXPO_PUBLIC_API_URL` in `.env` to match.
-
-To run on a phone with Expo Go instead of the browser, start Expo with `npx expo start` and scan its QR code with the Camera app. Keep the phone and Mac on the same Wi-Fi network. The mobile app derives the API host from the Expo development connection. For native simulator/device builds, use `npx expo run:ios` or `npx expo run:android`. The native runtime requires iOS 17 or later or Android 13 or later.
+To run on a phone with Expo Go instead of the browser, start Expo with `npx expo start` and scan its QR code with the Camera app. Keep the phone and Mac on the same Wi-Fi network. The mobile app derives the API host from the Expo development connection. 
 
 The app is configured for the React Native New Architecture and includes the required Worklets Babel plugin. Ollama hosts and caches the model on the server, so phones and browsers do not need to download or run it. Model output may vary and should be reviewed before saving.
