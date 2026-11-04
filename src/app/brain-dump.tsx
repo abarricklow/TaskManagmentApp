@@ -14,17 +14,24 @@ export default function BrainDumpScreen() {
   ) {
     setIsWorking(true);
     try {
+      const defaultCategory = await db.getFirstAsync<{ id: number }>(
+        'SELECT id FROM Category ORDER BY id LIMIT 1'
+      );
+      if (!defaultCategory) {
+        throw new Error('Create a task category before adding suggested tasks.');
+      }
+
       await db.withTransactionAsync(async () => {
         for (const task of tasks) {
           await db.runAsync(
-            'INSERT INTO Tasks (name, category_id, due_date) VALUES (?, ?, ?)',
+            'INSERT INTO Tasks (name, category_id, due_date, priority) VALUES (?, ?, ?, 1)',
             task.name.trim(),
-            task.categoryId,
+            task.categoryId ?? defaultCategory.id,
             task.dueDate
           );
         }
       });
-      router.back();
+      router.replace('/(tabs)');
     } catch (saveError) {
       console.error('Unable to save suggested tasks:', saveError);
       throw new Error('The subtasks could not be saved. Please try again.', {
@@ -36,7 +43,10 @@ export default function BrainDumpScreen() {
   }
 
   return (
-    <ScrollView contentContainerStyle={styles.content}>
+    <ScrollView
+      keyboardShouldPersistTaps="handled"
+      contentContainerStyle={styles.content}
+    >
       <Stack.Screen options={{ headerBackTitle: 'Add' }} />
       <Text style={styles.heading}>Break into subtasks</Text>
       <BrainDump
