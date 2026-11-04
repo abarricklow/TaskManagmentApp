@@ -193,10 +193,6 @@ export default function BrainDump({
       setEditError('Enter a task name first.');
       return;
     }
-    if (!dueDate) {
-      setEditError('Choose a due date first.');
-      return;
-    }
     if (selectedCategoryId === null) {
       setEditError('Choose a task category first.');
       return;
@@ -211,7 +207,7 @@ export default function BrainDump({
           ? {
               name: updatedTask,
               categoryId: selectedCategoryId,
-              dueDate: formatDateForDatabase(dueDate),
+              dueDate: dueDate ? formatDateForDatabase(dueDate) : null,
             }
           : task
       )
@@ -416,7 +412,6 @@ export default function BrainDump({
             <Text style={styles.fieldLabel}>Task name</Text>
             <TextInput
               accessibilityLabel="Suggested task"
-              autoFocus
               onChangeText={(text) => {
                 setEditedTask(text);
                 setEditError(null);
@@ -429,19 +424,43 @@ export default function BrainDump({
               style={styles.input}
               value={editedTask}
             />
-            <Text style={styles.fieldLabel}>Due date (required)</Text>
-            <Pressable
-              accessibilityRole="button"
-              onPress={() => {
-                setDraftDueDate(dueDate ?? new Date());
-                setShowDatePicker(true);
-              }}
-              style={({ pressed }) => [styles.dateButton, pressed && styles.pressed]}
-            >
-              <Text style={styles.valueLabel}>
-                {dueDate ? dueDate.toLocaleDateString() : 'Choose a due date'}
-              </Text>
-            </Pressable>
+            <Text style={styles.fieldLabel}>Due date (optional)</Text>
+            {Platform.OS === 'ios' ? (
+              <View style={styles.iosDatePickerField}>
+                <DateTimePicker
+                  accentColor={Colors.primary}
+                  display="compact"
+                  key={dueDate?.getTime() ?? 'unselected'}
+                  mode="date"
+                  onChange={(event, date) => {
+                    if (event.type === 'set' && date) {
+                      setDueDate(date);
+                      setDraftDueDate(date);
+                    }
+                  }}
+                  themeVariant="light"
+                  value={draftDueDate}
+                />
+                {!dueDate && (
+                  <View pointerEvents="none" style={styles.datePlaceholder}>
+                    <Text style={styles.valueLabel}>Choose a due date</Text>
+                  </View>
+                )}
+              </View>
+            ) : (
+              <Pressable
+                accessibilityRole="button"
+                onPress={() => {
+                  setDraftDueDate(dueDate ?? new Date());
+                  setShowDatePicker(true);
+                }}
+                style={({ pressed }) => [styles.dateButton, pressed && styles.pressed]}
+              >
+                <Text style={styles.valueLabel}>
+                  {dueDate ? dueDate.toLocaleDateString() : 'Choose a due date'}
+                </Text>
+              </Pressable>
+            )}
             {showDatePicker && Platform.OS === 'android' && (
               <DateTimePicker
                 accentColor={Colors.primary}
@@ -515,42 +534,6 @@ export default function BrainDump({
                 disabled={isSavingCategory}
                 label={isSavingCategory ? 'Adding...' : 'Add'}
                 onPress={addCategory}
-              />
-            </View>
-          </View>
-        </View>
-      </Modal>
-      <Modal
-        animationType="fade"
-        onRequestClose={() => setShowDatePicker(false)}
-        transparent
-        visible={showDatePicker && Platform.OS === 'ios'}
-      >
-        <View style={styles.modalBackdrop}>
-          <View style={styles.modalCard}>
-            <Text style={styles.sectionTitle}>Choose due date</Text>
-            <DateTimePicker
-              accentColor={Colors.primary}
-              display="spinner"
-              mode="date"
-              onValueChange={(_event, date) => setDraftDueDate(date)}
-              value={draftDueDate}
-            />
-            <View style={styles.modalActions}>
-              <Pressable
-                accessibilityRole="button"
-                onPress={() => setShowDatePicker(false)}
-                style={({ pressed }) => [styles.cancelButton, pressed && styles.pressed]}
-              >
-                <Text style={styles.cancelLabel}>Cancel</Text>
-              </Pressable>
-              <ActionButton
-                disabled={false}
-                label="Done"
-                onPress={() => {
-                  setDueDate(draftDueDate);
-                  setShowDatePicker(false);
-                }}
               />
             </View>
           </View>
@@ -693,6 +676,27 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     paddingHorizontal: Spacing.md,
     paddingVertical: Spacing.sm,
+  },
+  iosDatePickerField: {
+    alignSelf: 'flex-start',
+    height: 44,
+    justifyContent: 'center',
+    position: 'relative',
+    width: 180,
+  },
+  datePlaceholder: {
+    alignItems: 'center',
+    backgroundColor: '#F4F7F2',
+    borderColor: Colors.border,
+    borderRadius: 8,
+    borderWidth: 1,
+    bottom: 0,
+    justifyContent: 'center',
+    left: 0,
+    paddingHorizontal: Spacing.md,
+    position: 'absolute',
+    right: 0,
+    top: 0,
   },
   taskSelect: {
     alignItems: 'center',

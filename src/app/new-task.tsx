@@ -199,12 +199,6 @@ export default function NewTaskScreen() {
       setError('Enter a task name first.');
       return;
     }
-    // Due date is required for new tasks; older tasks (e.g. from a brain dump)
-    // may not have one, so editing doesn't force adding it
-    if (!dueDate && !isEditing) {
-      setError('Choose a due date first.');
-      return;
-    }
     if (selectedCategoryId === null) {
       setError('Choose a task category first.');
       return;
@@ -426,7 +420,7 @@ export default function NewTaskScreen() {
           value={taskName}
         />
 
-        <Text style={styles.fieldLabel}>{isEditing ? 'Due date' : 'Due date (required)'}</Text>
+        <Text style={styles.fieldLabel}>Due date (optional)</Text>
         {Platform.OS === 'web' ? (
           // The native date picker doesn't exist on web, so use the browser's own
           <WebDateInput disabled={isWorking} onChange={setDueDate} value={dueDate} />

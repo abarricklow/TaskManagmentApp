@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
 import { router, Stack } from 'expo-router';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Colors, FontSizes, Spacing } from '../styles/theme';
 
 type GratitudeStage = 'welcome' | 'entry' | 'done';
@@ -9,6 +10,7 @@ const ENTRY_COUNT = 3;
 const COMPLETION_PAUSE_MS = 2000;
 
 export default function GratitudeScreen() {
+  const insets = useSafeAreaInsets();
   const [stage, setStage] = useState<GratitudeStage>('welcome');
   const [entryIndex, setEntryIndex] = useState(0);
   const [entry, setEntry] = useState('');
@@ -36,7 +38,10 @@ export default function GratitudeScreen() {
   }
 
   return (
-    <ScrollView contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled">
+    <ScrollView
+      contentContainerStyle={[styles.content, { paddingTop: insets.top + Spacing.md }]}
+      keyboardShouldPersistTaps="handled"
+    >
       <Stack.Screen options={{ headerShown: false }} />
       <Text style={styles.title}>Grow Gratitude</Text>
 

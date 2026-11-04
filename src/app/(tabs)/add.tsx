@@ -17,7 +17,7 @@ export default function AddScreen() {
       >
         <Text style={styles.actionTitle}>Quick add a task</Text>
         <Text style={styles.actionDescription}>
-          Add a task with a category and due date
+          Add a task with a category and optional due date
         </Text>
       </Pressable>
 
