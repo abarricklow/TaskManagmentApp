@@ -52,10 +52,10 @@ const plantFloors = [
 ];
 
 const floorPositions = [
-  0.12,
-  0.36,
-  0.60,
-  0.83,
+  0.045,
+  0.26,
+  0.484,
+  0.70,
 ];
 
 type Plant = {
@@ -71,7 +71,7 @@ export default function PlantScreen() {
   const [isLoading, setIsLoading] = useState(true);
 
   const shelfSize = Math.min(width - Spacing.md * 2, 380);
-  const plantSize = shelfSize * 0.17;
+  const plantSize = shelfSize * 0.24;
 
   // Load collected plants from SQLite
   const loadPlants = useCallback(async () => {
@@ -164,6 +164,7 @@ export default function PlantScreen() {
                     {
                       width: plantSize,
                       height: plantSize,
+                      marginLeft: -20,
                     },
                   ]}
                   resizeMode="contain"
@@ -223,6 +224,7 @@ const styles = StyleSheet.create({
     width: '90%',
     flexDirection: 'row',
     justifyContent: 'space-evenly',
+    columnGap: .3,
     alignItems: 'flex-end',
   },
 
