@@ -8,9 +8,11 @@ import {
   View,
   useWindowDimensions,
   ActivityIndicator,
+  Pressable,
 } from 'react-native';
 import { useSQLiteContext } from 'expo-sqlite';
 import { useFocusEffect } from 'expo-router';
+import { router } from 'expo-router';
 import { Colors, FontSizes, Spacing, GlobalStyles } from '../../styles/theme';
 
 // Shelf image
@@ -156,20 +158,37 @@ export default function PlantScreen() {
               }
 
               return (
-                <Image
+                  <Pressable
                   key={plantNumber}
-                  source={plantImages[plantNumber - 1]}
-                  style={[
-                    styles.plantImage,
-                    {
-                      width: plantSize,
-                      height: plantSize,
-                      marginLeft: -20,
-                    },
+                  onPress={() =>
+                    router.push({
+                      pathname: '/plant/[plantId]',
+                      params: {
+                        plantId: String(plantNumber),
+                      },
+                    })
+                  }
+                  accessibilityRole="button"
+                  accessibilityLabel={`View information about plant ${plantNumber}`}
+                  style={({ pressed }) => [
+                    styles.plantButton,
+                    pressed && styles.plantPressed,
                   ]}
-                  resizeMode="contain"
-                  accessibilityLabel={`Collected plant ${plantNumber}`}
-                />
+                >
+                  <Image
+                    source={plantImages[plantNumber - 1]}
+                    style={[
+                      styles.plantImage,
+                      {
+                        width: plantSize,
+                        height: plantSize,
+                        marginLeft: -20,
+                      },
+                    ]}
+                    resizeMode="contain"
+                    accessibilityLabel={`Collected plant ${plantNumber}`}
+                  />
+                </Pressable>
               );
             })}
           </View>
@@ -241,5 +260,11 @@ const styles = StyleSheet.create({
     fontSize: FontSizes.body,
     textAlign: 'center',
     marginTop: Spacing.md,
+  },
+  plantButton: {
+    alignSelf: 'center',
+  },
+  plantPressed: {
+    opacity: 0.6,
   },
 });
