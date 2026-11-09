@@ -9,11 +9,21 @@ export default function RootLayout() {
     <SQLiteProvider databaseName="taskmanager.db" onInit={initializeDatabase}>
       <Stack
         screenOptions={{
-          // Solid header so screen content starts below it, not underneath
           headerStyle: { backgroundColor: Colors.background },
         }}
       >
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+        <Stack.Screen
+          name="(tabs)"
+          options={{ headerShown: false }}
+        />
+
+        <Stack.Screen
+          name="plant/[plantId]"
+          options={{
+            title: 'Plant Information',
+            headerBackTitle: 'Back',
+          }}
+        />
       </Stack>
     </SQLiteProvider>
   );
