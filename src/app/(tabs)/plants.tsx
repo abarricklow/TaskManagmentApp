@@ -200,7 +200,7 @@ export default function PlantScreen() {
       )}
 
       <Text style={styles.footer}>
-        Keep completing tasks to grow your collection!
+        Click on any plant to learn more about it!
       </Text>
     </ScrollView>
   );
