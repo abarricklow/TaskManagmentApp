@@ -40,89 +40,72 @@ const plantImages = [
 // Plant information
 const plantInformation = [
   {
-    name: 'Plant 1',
-    description: 'Information about plant 1 goes here.',
-    care: 'Care instructions for plant 1 go here.',
+    name: 'String of Pearls',
+    description: 'Scientific Name: Senecio rowleyanus.    This succulent has spherical leaves that resemble small peas. Its round shape minimizes water loss through evaporation, making it well adapted to desert climates. This plant has translucent “windows” in its round leaves that allow light to enter. The string of pearls thrives in bright, indirect light and produces white flowers throughout the spring.',
   },
   {
-    name: 'Plant 2',
-    description: 'Information about plant 2 goes here.',
-    care: 'Care instructions for plant 2 go here.',
+    name: 'Aloe Vera',
+    description: 'Scientific Name: Aloe Vera.    Aloe is a cactus-like plant that grows in hot, dry climates. It is grown in subtropical regions around the world, including the southern border areas of Texas, New Mexico, Arizona, and California. The gel in those thick, succulent, spiky leaves has been used by people for medicine and beauty for thousands of years. In fact, the ancient Egyptians called aloe vera ‘the plant of immortality’.',
   },
   {
-    name: 'Plant 3',
-    description: 'Information about plant 3 goes here.',
-    care: 'Care instructions for plant 3 go here.',
+    name: 'Zebra Plant',
+    description: 'Scientific Name: Haworthia attenuata.    This plant is small, stemless, and has a clumping habit that forms into compact star-shaped rosettes that may spread out creating a carpet. It measures up to 4 to 12 inches tall and 6 inches to 2 feet wide. The leaves are stiff, linear, pointed, dark green and have horizontal white bumpy stripes or tubercles. The flowers are tubular, pale to dark pink, and bloom in clusters on long slender stems.',
   },
   {
-    name: 'Plant 4',
-    description: 'Information about plant 4 goes here.',
-    care: 'Care instructions for plant 4 go here.',
+    name: 'Blue Chalksticks',
+    description: 'Scientific Name: Curio repens.    The narrow leaves remain powder blue in color throughout the year. It features dainty clusters of white flowers held on top of the stems in mid-summer. This is a relatively low-maintenance plant and usually looks its best without pruning.',
   },
   {
-    name: 'Plant 5',
-    description: 'Information about plant 5 goes here.',
-    care: 'Care instructions for plant 5 go here.',
+    name: 'Old Lady Cactus',
+    description: 'Scientific Name: Mammillaria hahniana.    Their low-maintenance needs make them great for beginners and plant lovers of all kinds. As an added bonus, most of them bloom well, even when you keep them indoors. This cactus type starts off globular and grows taller over time into a cylindrical shape. The stems reach up to 12 inches tall and four inches wide. They can be solitary or form clumps over time.',
   },
   {
-    name: 'Plant 6',
-    description: 'Information about plant 6 goes here.',
-    care: 'Care instructions for plant 6 go here.',
+    name: 'Flapjack',
+    description: 'Scientific Name: Kalanchoe luciae.    Flapjacks is a drought tolerant succulent. The basal rosette of the plant generally grows 12 to 18 inches tall and 6 to 8 inches wide. The opposite leaves do not have petioles and are held upright like clam shells, positioning only their narrow edges to the midday sun. The smooth, grayish-green, obovate leaves are 4 to 6 inches long, with blunt rounded tips and covered with a white to grey powdery bloom that helps protect the leaves from sunburn.',
   },
   {
-    name: 'Plant 7',
-    description: 'Information about plant 7 goes here.',
-    care: 'Care instructions for plant 7 go here.',
+    name: 'Firestick Plant',
+    description: 'Scientific Name: Euphorbia tirucalli.    This endangered species is recognized for its light green, pencil-thin, bush-like branches with miniature leaflets. It is fast-growing reaching heights of eight to ten feet or more in the southwest desert. In its native habitat it can reach thirty feet with a ten-foot spread. The color in its stems will fade to a greenish-yellow as summer approaches. This plant becomes redder during the winter months and does best when grown in full sun.',
   },
   {
-    name: 'Plant 8',
-    description: 'Information about plant 8 goes here.',
-    care: 'Care instructions for plant 8 go here.',
+    name: 'Fairy Washboard',
+    description: 'Scientific Name: Haworthia limifolia.    A succulent plant forming a spiralling rosette of stiff, pointed triangular leaves, each leaf bears numerous irregular ridges. In summer tubular green and white flowers are produced on 40cm tall flower stalks. Fairy Washboard is native to South Africa, where it was first cultivated at the beginning of the 20th century. A characteristic feature of the plant is that it can adapt to different climates and survive in low-light conditions.',
   },
   {
-    name: 'Plant 9',
-    description: 'Information about plant 9 goes here.',
-    care: 'Care instructions for plant 9 go here.',
+    name: 'Jade Plant',
+    description: 'Scientific Name: Crassula ovata.    It is a succulent subshrub or shrub native to an area extending from southeastern Mozambique to the southeastern Cape Province. A jade plant has the look of a bonsai without the demanding care: over the years, its stem thickens into a small trunk and its branches form a crown. Fun fact: A single leaf laid on dry growing medium can produce a new plant.',
   },
   {
-    name: 'Plant 10',
-    description: 'Information about plant 10 goes here.',
-    care: 'Care instructions for plant 10 go here.',
+    name: 'Blotched Philodendron',
+    description: 'Scientific Name: Philodendron mamei.    This is an evergreen perennial known for its creeping habit. It spreads across the ground with its large leaves held aloft on sturdy but short stems. Its main appeal are its large, heart-shaped, velvety leaves that display "blotches" and patterns between its veins.',
   },
   {
-    name: 'Plant 11',
-    description: 'Information about plant 11 goes here.',
-    care: 'Care instructions for plant 11 go here.',
+    name: 'Dumb Cane or Camille',
+    description: 'Scientific Name: Dieffenbachia seguine Camille.    One of the most popular dieffenbachias, ‘Camille’ has ivory-yellow leaves with dark green edges. It grows 2 to 3 feet tall and 2 feet wide. It does best in medium-bright, filtered light. Depending on how much light the plant gets, the central veins of the leaves take on a white or green hue and the yellow sections of the leaves fade to a creamy white color.',
   },
   {
-    name: 'Plant 12',
-    description: 'Information about plant 12 goes here.',
-    care: 'Care instructions for plant 12 go here.',
+    name: 'Chinese Money Plant',
+    description: 'Scientific Name: Pilea peperomioides.    You can recognise this plant by its small, flat, round leaves that are reminiscent of coins or pancakes. The leaves are glossy, leathery, thick and dark green and balance on long, thin stalks. The Chinese money plant can grow small flowers that bloom for several weeks, but this is very rare. Chinese money plant is an air-purifyer, contributing to cleaner and healthier indoor air.',
   },
   {
-    name: 'Plant 13',
-    description: 'Information about plant 13 goes here.',
-    care: 'Care instructions for plant 13 go here.',
+    name: 'Elephant Foot or Ponytail Palm',
+    description: 'Scientific Name: Beaucarnea recurvata.    Ponytail palm is an evergreen perennial in the asparagus family (Asparagaceae). It is native to Mexico and is commonly grown as a houseplant. It is slow growing, drought tolerant and hardy to 50 degrees F. Even though it is called ponytail palm, it is not a true palm,  it has a thick swollen stem (caudex) that stores water and narrow dark green strappy leaves that gently curl toward the ends.  The plant almost looks like a plume from a water fountain.',
   },
   {
-    name: 'Plant 14',
-    description: 'Information about plant 14 goes here.',
-    care: 'Care instructions for plant 14 go here.',
+    name: 'Rubber Plant',
+    description: 'Scientific Name: Ficus elastica.    The rubber plant has a latex-like white sap in the stem and leaves, giving it its characteristic look. It was identified by the NASA Clean Air Study as an effective plant to remove toxins like formaldehyde from the air. Rubber plants represent abundance, happiness and wealth. According to the teachings of feng shui the rubber plant’s round leaves make it an ideal candidate to be placed in a corner in order to soften the sharp angles.',
   },
   {
-    name: 'Plant 15',
-    description: 'Information about plant 15 goes here.',
-    care: 'Care instructions for plant 15 go here.',
+    name: 'Monstera Aurea',
+    description: 'Scientific Name: Monstera Marmorata.    The term “Aurea” simply refers to yellow variegation on a Monstera Deliciosa regardless of whether it’s a small form or large form.  Young leaves start heart-shaped and solid, while mature climbing plants develop large, glossy, split, and fenestrated (holed) leaves.  Like other members of the Araceae family, it is toxic to pets and children if ingested due to insoluble calcium oxalate crystals.',
   },
   {
-    name: 'Plant 16',
-    description: 'Information about plant 16 goes here.',
-    care: 'Care instructions for plant 16 go here.',
+    name: 'Bamboo',
+    description: 'Scientific Name: Bambusoideae.    Bamboos include some of the fastest-growing plants in the world, due to a unique rhizome-dependent system. Certain species of bamboo can grow 36 inches within a 24-hour period, at a rate of almost 40 millimeters per hour. With its unlikely shape, bamboo is not a tree! It is considered grass; witht hat said, bamboo is an extremely invasive plant species because, like short grass, it propagates. All continents have native species, except for Europe and Antartica, where non-native species still grow.',
   },
   {
-    name: 'Plant 17',
-    description: 'Information about plant 17 goes here.',
-    care: 'Care instructions for plant 17 go here.',
+    name: 'Petra Croton',
+    description: 'Scientific Name: Codiaeum variegatum Petra.    This plant is native to Malaysia, Indonesia, the Philippines, and northern Australia/Pacific islands. This plant can be identified by its large, glossy, leathery, oval-shaped leaves with brightly colored veins in shades of red, orange, yellow, pink, and green. Although it has a beutiful appearance, this Croton plant contains a milky sap that can cause skin/contact dermatitis, and the plant is toxic if ingested.',
   },
 ];
 
@@ -169,13 +152,6 @@ export default function PlantDetailsScreen() {
           {plant.description}
         </Text>
 
-        <Text style={styles.sectionTitle}>
-          Plant care
-        </Text>
-
-        <Text style={styles.description}>
-          {plant.care}
-        </Text>
       </View>
 
       <Pressable
